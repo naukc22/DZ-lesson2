@@ -14,10 +14,7 @@ public class LoadTrucks {
         this.truckWidth = truckWidth;
         this.truckHeight = truckHeight;
     }
-
-    //TODO : сделай конструктор чтобы константы указывались. убрать статики. и второй класс сделать для погрузки по одной посылке.
-
-    // Создание пустого кузова
+    
     public char[][] createEmptyTruck() {
         char[][] truck = new char[truckHeight + 1][truckWidth + 2];
         for (int i = 0; i < truckHeight + 1; i++) {
