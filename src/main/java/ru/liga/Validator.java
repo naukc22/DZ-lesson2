@@ -13,7 +13,7 @@ public class Validator {
         this.truckHeight = truckHeight;
     }
 
-    public boolean isValidPackage(int[][] pack) {
+    private boolean isValidPackage(int[][] pack) {
         int packageWidth = Arrays.stream(pack)
                 .mapToInt(arr -> arr.length)
                 .max()
