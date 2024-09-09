@@ -59,7 +59,8 @@ public class Validator {
         for (int i = 0; i < packages.size(); i++) {
             if (!isValidPackage(packages.get(i))) {
                 packages.remove(packages.get(i));
-                System.out.println("Посылка #" + i + " удалена: размер больше, чем кузов.");
+                int number = i + 1;
+                System.out.println("Посылка #" + number + " удалена: размер больше, чем кузов.");
             }
         }
 
