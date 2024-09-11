@@ -18,7 +18,7 @@ public class PackageValidator {
     }
 
 
-    public static List<int[][]> filterValidPackages(List<int[][]> packages, int truckHeight, int truckWidth) {
+    public static List<int[][]> sortAndGetValidPackages(List<int[][]> packages, int truckHeight, int truckWidth) {
 
         for (int i = 0; i < packages.size(); i++) {
             if (!isValidPackage(packages.get(i), truckHeight, truckWidth)) {

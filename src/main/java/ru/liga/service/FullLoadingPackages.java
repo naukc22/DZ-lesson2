@@ -16,29 +16,29 @@ public class FullLoadingPackages implements LoadingPackages{
 
     // Основной алгоритм загрузки посылок в кузов
     public List<char[][]> loadPackages(List<int[][]> packages) {
-        sortPackages(packages);
+        sortPackagesInNumericalOrder(packages);
         List<char[][]> trucks = new ArrayList<>();
         char[][] currentTruck = truckService.createEmptyTruck(truckHeight, truckWidth);
         trucks.add(currentTruck);
 
-        for (int i = truckHeight - 1; i >= 0 ; i--) {
+        for (int row = truckHeight - 1; row >= 0 ; row--) {
 
-            for (int j = 1; j <= truckWidth; j++) {
+            for (int column = 1; column <= truckWidth; column++) {
 
-                if (!packages.isEmpty() && j == truckWidth && i == 0) {
+                if (!packages.isEmpty() && column == truckWidth && row == 0) {
                     currentTruck = truckService.createEmptyTruck(truckHeight, truckWidth);
                     trucks.add(currentTruck);
-                    i = truckHeight - 1;
-                    j = 0;
+                    row = truckHeight - 1;
+                    column = 0;
                 }
-                if (currentTruck[i][j] != ' ') {
+                if (currentTruck[row][column] != ' ') {
                     continue;
                 }
 
                 // Вычисляем максимальную ширину и высотку посылки которая сюда поместиться
                 int possibleCapacityWidth = 1;
-                for (int w = 1; w < truckWidth + 1 - j; w++) {
-                    if (currentTruck[i][j + w] == ' ') {
+                for (int w = 1; w < truckWidth + 1 - column; w++) {
+                    if (currentTruck[row][column + w] == ' ') {
                         possibleCapacityWidth++;
                     } else {
                         break;
@@ -46,22 +46,22 @@ public class FullLoadingPackages implements LoadingPackages{
                 }
                 int possibleCapacityHeight = 1;
                 for (int h = 1; h < truckWidth; h++) {
-                    if (i - h >= 0) {
-                        if (currentTruck[i - h][j] == ' ') {
+                    if (row - h >= 0) {
+                        if (currentTruck[row - h][column] == ' ') {
                             possibleCapacityHeight++;
                         }
                     }
                 }
 
                 // Ищем и грузим подходящую под размер посылку
-                boolean loaded = loadSuitablePackage(packages, possibleCapacityWidth, possibleCapacityHeight, currentTruck, i, j);
+                boolean loaded = loadSuitablePackage(packages, possibleCapacityWidth, possibleCapacityHeight, currentTruck, row, column);
 
                 // Если не удалось загрузить в текущий контейнер, создаем новый
-                if (!loaded && !packages.isEmpty() && j == truckWidth && i == 0) {
+                if (!loaded && !packages.isEmpty() && column == truckWidth && row == 0) {
                     currentTruck = truckService.createEmptyTruck(truckHeight, truckWidth);
                     trucks.add(currentTruck);
-                    i = truckHeight - 1;
-                    j = 0;
+                    row = truckHeight - 1;
+                    column = 0;
                 }
             }
         }
@@ -114,7 +114,7 @@ public class FullLoadingPackages implements LoadingPackages{
     }
 
     // Метод для сортировки посылок по возрастанию
-    private void sortPackages(List<int[][]> packages) {
+    private void sortPackagesInNumericalOrder(List<int[][]> packages) {
         packages.sort(Comparator.comparingInt(matrix -> matrix[0][0]));
         Collections.reverse(packages);
     }

@@ -4,8 +4,6 @@ import java.util.List;
 
 public class TruckService {
 
-
-
     public char[][] createEmptyTruck(int truckHeight, int truckWidth) {
         char[][] truck = new char[truckHeight + 1][truckWidth + 2];
         for (int i = 0; i < truckHeight + 1; i++) {
