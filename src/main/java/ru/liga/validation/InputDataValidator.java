@@ -1,28 +1,6 @@
-package ru.liga;
+package ru.liga.validation;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class Validator {
-
-    private final int truckWidth;
-    private final int truckHeight;
-
-    public Validator(int truckWidth, int truckHeight) {
-        this.truckWidth = truckWidth;
-        this.truckHeight = truckHeight;
-    }
-
-    private boolean isValidPackage(int[][] pack) {
-        int packageWidth = Arrays.stream(pack)
-                .mapToInt(arr -> arr.length)
-                .max()
-                .orElse(0);
-
-        int packageHeight = pack.length;
-
-        return packageWidth <= truckWidth && packageHeight <= truckHeight;
-    }
+public class InputDataValidator {
 
     public static boolean validateInput(String[] args) {
         if (args.length != 4) {
@@ -54,16 +32,4 @@ public class Validator {
         return true; // Если все проверки пройдены
     }
 
-    public List<int[][]> filterValidPackages(List<int[][]> packages) {
-
-        for (int i = 0; i < packages.size(); i++) {
-            if (!isValidPackage(packages.get(i))) {
-                packages.remove(packages.get(i));
-                int number = i + 1;
-                System.out.println("Посылка #" + number + " удалена: размер больше, чем кузов.");
-            }
-        }
-
-        return packages;
-    }
 }

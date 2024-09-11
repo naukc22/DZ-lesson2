@@ -1,83 +1,24 @@
-package ru.liga;
+package ru.liga.service;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
-public class LoadTrucks {
+public class FullLoadingPackages implements LoadingPackages{
 
     int truckWidth;
     int truckHeight;
+    TruckService truckService;
 
-    public LoadTrucks(int truckWidth, int truckHeight) {
+    public FullLoadingPackages(int truckWidth, int truckHeight) {
         this.truckWidth = truckWidth;
         this.truckHeight = truckHeight;
-    }
-    
-    public char[][] createEmptyTruck() {
-        char[][] truck = new char[truckHeight + 1][truckWidth + 2];
-        for (int i = 0; i < truckHeight + 1; i++) {
-            for (int j = 0; j < truckWidth + 2; j++) {
-                if (i == truckHeight || j == 0 || j == truckWidth + 1) {
-                    truck[i][j] = '+';
-                } else {
-                    truck[i][j] = ' ';
-                }
-            }
-        }
-        return truck;
-    }
-
-    public void printAllTrucks(List<char[][]> trucks) {
-        int truckNumber = 1;
-        for (char[][] truck : trucks) {
-            System.out.println("Truck " + truckNumber + ":");
-            printTruck(truck);
-            truckNumber++;
-        }
-    }
-
-    //  Печать трака
-    public void printTruck (char[][] truck) {
-        for (char[] row : truck) {
-            for (char cell : row) {
-                System.out.print(cell);
-            }
-            System.out.println();
-        }
-    }
-
-    // Метод для чтения посылок из файла
-    public List<int[][]> readPackagesFromFile(String filePath) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        List<int[][]> packages = new ArrayList<>();
-        String line;
-        List<String> packageLines = new ArrayList<>();
-
-        while ((line = reader.readLine()) != null) {
-            if (line.isEmpty()) {
-                if (!packageLines.isEmpty()) {
-                    packages.add(convertToPackage(packageLines));
-                    packageLines.clear();
-                }
-            } else {
-                packageLines.add(line);
-            }
-        }
-        // Добавляем последнюю посылку
-        if (!packageLines.isEmpty()) {
-            packages.add(convertToPackage(packageLines));
-        }
-
-        return packages;
+        truckService = new TruckService();
     }
 
     // Основной алгоритм загрузки посылок в кузов
-    public List<char[][]> loadTrucks(List<int[][]> packages) {
+    public List<char[][]> loadPackages(List<int[][]> packages) {
         sortPackages(packages);
         List<char[][]> trucks = new ArrayList<>();
-        char[][] currentTruck = createEmptyTruck();
+        char[][] currentTruck = truckService.createEmptyTruck(truckHeight, truckWidth);
         trucks.add(currentTruck);
 
         for (int i = truckHeight - 1; i >= 0 ; i--) {
@@ -85,7 +26,7 @@ public class LoadTrucks {
             for (int j = 1; j <= truckWidth; j++) {
 
                 if (!packages.isEmpty() && j == truckWidth && i == 0) {
-                    currentTruck = createEmptyTruck();
+                    currentTruck = truckService.createEmptyTruck(truckHeight, truckWidth);
                     trucks.add(currentTruck);
                     i = truckHeight - 1;
                     j = 0;
@@ -95,29 +36,29 @@ public class LoadTrucks {
                 }
 
                 // Вычисляем максимальную ширину и высотку посылки которая сюда поместиться
-                int possibleWidth = 1;
+                int possibleCapacityWidth = 1;
                 for (int w = 1; w < truckWidth + 1 - j; w++) {
                     if (currentTruck[i][j + w] == ' ') {
-                        possibleWidth++;
+                        possibleCapacityWidth++;
                     } else {
                         break;
                     }
                 }
-                int possibleHeight = 1;
+                int possibleCapacityHeight = 1;
                 for (int h = 1; h < truckWidth; h++) {
                     if (i - h >= 0) {
                         if (currentTruck[i - h][j] == ' ') {
-                            possibleHeight++;
+                            possibleCapacityHeight++;
                         }
                     }
                 }
 
                 // Ищем и грузим подходящую под размер посылку
-                boolean loaded = loadSuitablePackage(packages, possibleWidth, possibleHeight, currentTruck, i, j);
+                boolean loaded = loadSuitablePackage(packages, possibleCapacityWidth, possibleCapacityHeight, currentTruck, i, j);
 
                 // Если не удалось загрузить в текущий контейнер, создаем новый
                 if (!loaded && !packages.isEmpty() && j == truckWidth && i == 0) {
-                    currentTruck = createEmptyTruck();
+                    currentTruck = truckService.createEmptyTruck(truckHeight, truckWidth);
                     trucks.add(currentTruck);
                     i = truckHeight - 1;
                     j = 0;
@@ -173,23 +114,10 @@ public class LoadTrucks {
     }
 
     // Метод для сортировки посылок по возрастанию
-    public void sortPackages(List<int[][]> packages) {
+    private void sortPackages(List<int[][]> packages) {
         packages.sort(Comparator.comparingInt(matrix -> matrix[0][0]));
         Collections.reverse(packages);
     }
 
-    // Метод для конвертации строкового представления посылки в массив
-    public int[][] convertToPackage(List<String> packageLines) {
-        int[][] pack = new int[packageLines.size()][];
-
-        for (int i = 0; i < packageLines.size(); i++) {
-            String line = packageLines.get(i);
-            pack[i] = new int[line.length()];
-            for (int j = 0; j < line.length(); j++) {
-                pack[i][j] = Character.getNumericValue(line.charAt(j));
-            }
-        }
-        return pack;
-    }
 
 }
