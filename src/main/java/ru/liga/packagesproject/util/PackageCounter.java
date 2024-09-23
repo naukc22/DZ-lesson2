@@ -1,13 +1,12 @@
 package ru.liga.packagesproject.util;
 
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import ru.liga.packagesproject.model.Truck;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Log4j2
+@Slf4j
 public class PackageCounter {
 
     public static Map<Character, Integer> countPackages(Truck truck) {

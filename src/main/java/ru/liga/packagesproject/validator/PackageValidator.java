@@ -1,12 +1,12 @@
 package ru.liga.packagesproject.validator;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import ru.liga.packagesproject.model.Package;
 
 import java.util.Iterator;
 import java.util.List;
 
-@Log4j2
+@Slf4j
 public class PackageValidator {
 
     private static boolean isValidPackage(Package pack, int truckHeight, int truckWidth) {

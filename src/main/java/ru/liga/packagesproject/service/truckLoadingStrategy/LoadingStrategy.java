@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.service.truckLoadingStrategies;
+package ru.liga.packagesproject.service.truckLoadingStrategy;
 
 import ru.liga.packagesproject.model.Package;
 import ru.liga.packagesproject.model.Truck;

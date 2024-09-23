@@ -1,11 +1,11 @@
 package ru.liga.packagesproject.model;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-@Log4j2
+@Slf4j
 public class Truck {
     private static final char TRUCK_BOARD_SYMBOL = '+';
 
@@ -18,6 +18,11 @@ public class Truck {
         this.height = height;
         this.width = width;
         initializeBody();
+    }
+
+    private void initializeBody() {
+        body = new char[height + 1][width + 2];
+        fillBodyWithBoarderAndWhitespace();
     }
 
     public Truck(char[][] body) {
@@ -68,11 +73,6 @@ public class Truck {
 
     private boolean isPackageFitInCapacity(int row, int col, Package pack, int packageWidth, int possibleCapacityWidth, int packageHeight, int possibleCapacityHeight) {
         return packageWidth <= possibleCapacityWidth && packageHeight <= possibleCapacityHeight && hasValidSupport(pack, row, col);
-    }
-
-    private void initializeBody() {
-        body = new char[height + 1][width + 2];
-        fillBodyWithBoarderAndWhitespace();
     }
 
     private void fillBodyWithBoarderAndWhitespace() {

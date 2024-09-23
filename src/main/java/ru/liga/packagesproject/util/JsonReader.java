@@ -3,7 +3,7 @@ package ru.liga.packagesproject.util;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import ru.liga.packagesproject.model.Truck;
 
 import java.io.FileReader;
@@ -11,9 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Log4j2
+@Slf4j
 public class JsonReader {
-    public List<Truck> loadTrucksFromFile(String filePath) throws IOException {
+    public List<Truck> loadTrucksFromJson(String filePath) throws IOException {
         log.info("Начинаем загрузку грузовиков из файла: {}", filePath);
 
         Gson gson = new Gson();

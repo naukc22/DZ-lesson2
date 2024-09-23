@@ -1,17 +1,18 @@
 package ru.liga.packagesproject.service;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import ru.liga.packagesproject.model.LoadingMode;
 import ru.liga.packagesproject.model.Package;
 import ru.liga.packagesproject.model.Truck;
-import ru.liga.packagesproject.service.truckLoadingStrategies.LoadingStrategy;
+import ru.liga.packagesproject.service.truckLoadingStrategy.LoadingStrategy;
+import ru.liga.packagesproject.service.truckLoadingStrategy.LoadingStrategyFactory;
 import ru.liga.packagesproject.util.PackageCounter;
 import ru.liga.packagesproject.validator.PackageValidator;
 
 import java.util.List;
 import java.util.Map;
 
-@Log4j2
+@Slf4j
 public class TruckService {
 
     private static final int TRUCK_WIDTH = 6;
@@ -22,7 +23,7 @@ public class TruckService {
 
         PackageValidator.sortValidPackages(packages, TRUCK_HEIGHT, TRUCK_WIDTH);
 
-        LoadingStrategy strategy = loadingMode.getStrategyFromMode(TRUCK_WIDTH, TRUCK_HEIGHT);
+        LoadingStrategy strategy = LoadingStrategyFactory.getStrategyFromLoadingMode(loadingMode, TRUCK_WIDTH, TRUCK_HEIGHT);
         List<Truck> trucks = strategy.loadPackages(packages, truckCount);
 
         log.info("Загрузка посылок завершена. Загружено грузовиков: {}", trucks.size());

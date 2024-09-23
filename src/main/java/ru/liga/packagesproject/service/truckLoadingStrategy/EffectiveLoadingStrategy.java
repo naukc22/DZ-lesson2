@@ -1,6 +1,6 @@
-package ru.liga.packagesproject.service.truckLoadingStrategies;
+package ru.liga.packagesproject.service.truckLoadingStrategy;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import ru.liga.packagesproject.model.Package;
 import ru.liga.packagesproject.model.Truck;
 
@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-@Log4j2
+@Slf4j
 public class EffectiveLoadingStrategy implements LoadingStrategy {
 
     int truckWidth;

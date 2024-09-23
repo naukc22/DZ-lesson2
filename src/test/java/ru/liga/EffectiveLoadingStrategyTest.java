@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.liga.packagesproject.model.Package;
 import ru.liga.packagesproject.model.Truck;
-import ru.liga.packagesproject.service.truckLoadingStrategies.EffectiveLoadingStrategy;
+import ru.liga.packagesproject.service.truckLoadingStrategy.EffectiveLoadingStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
