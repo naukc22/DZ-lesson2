@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.dto;
+package ru.liga.packagesproject.models.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -2,13 +2,13 @@ package ru.liga.packagesproject;
 
 import org.junit.jupiter.api.Test;
 import ru.liga.packagesproject.models.Truck;
-import ru.liga.packagesproject.utils.PackageCounter;
+import ru.liga.packagesproject.services.PackageCounterService;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PackageCounterTest {
+class PackageCounterServiceTest {
 
     @Test
     void testCountPackages_singleTruck() {
@@ -20,7 +20,7 @@ class PackageCounterTest {
         };
 
         Truck truck = new Truck(truckBody);
-        Map<Character, Integer> packageCounts = PackageCounter.countPackages(truck);
+        Map<Character, Integer> packageCounts = PackageCounterService.countPackages(truck);
 
         assertEquals(2, packageCounts.get('1'));
         assertEquals(1, packageCounts.get('3'));
@@ -37,7 +37,7 @@ class PackageCounterTest {
         };
 
         Truck truck = new Truck(truckBody);
-        Map<Character, Integer> packageCounts = PackageCounter.countPackages(truck);
+        Map<Character, Integer> packageCounts = PackageCounterService.countPackages(truck);
 
         assertEquals(2, packageCounts.get('2'));
         assertEquals(1, packageCounts.get('3'));
@@ -54,7 +54,7 @@ class PackageCounterTest {
         };
 
         Truck truck = new Truck(truckBody);
-        Map<Character, Integer> packageCounts = PackageCounter.countPackages(truck);
+        Map<Character, Integer> packageCounts = PackageCounterService.countPackages(truck);
 
         assertEquals(0, packageCounts.size());
     }

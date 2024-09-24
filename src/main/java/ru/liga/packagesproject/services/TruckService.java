@@ -6,7 +6,6 @@ import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.models.Truck;
 import ru.liga.packagesproject.services.truckLoadingStrategies.LoadingStrategy;
 import ru.liga.packagesproject.services.truckLoadingStrategies.LoadingStrategyFactory;
-import ru.liga.packagesproject.utils.PackageCounter;
 import ru.liga.packagesproject.validators.PackageValidator;
 
 import java.util.List;
@@ -47,10 +46,10 @@ public class TruckService {
             System.out.println("Трак " + (i + 1) + ":");
             truck.printTruckToConsole();
 
-            Map<Character, Integer> packageCounts = PackageCounter.countPackages(truck);
+            Map<Character, Integer> packageCounts = PackageCounterService.countPackages(truck);
             log.debug("Результат подсчета посылок для грузовика {}: {}", (i + 1), packageCounts);
             System.out.println("Результат подсчета посылок:");
-            PackageCounter.printPackageCounts(packageCounts);
+            PackageCounterService.printPackageCounts(packageCounts);
             System.out.println();
         }
     }

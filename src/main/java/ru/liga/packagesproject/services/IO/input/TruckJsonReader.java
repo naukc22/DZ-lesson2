@@ -2,8 +2,8 @@ package ru.liga.packagesproject.services.IO.input;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import ru.liga.packagesproject.dto.TruckDTO;
-import ru.liga.packagesproject.dto.TrucksSetDTO;
+import ru.liga.packagesproject.models.dto.TruckDTO;
+import ru.liga.packagesproject.models.dto.TrucksSetDTO;
 import ru.liga.packagesproject.models.Truck;
 
 import java.io.FileNotFoundException;

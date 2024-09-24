@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.utils;
+package ru.liga.packagesproject.services;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.liga.packagesproject.models.Truck;
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class PackageCounter {
+public class PackageCounterService {
 
     public static Map<Character, Integer> countPackages(Truck truck) {
         log.info("Начинаем подсчёт посылок в траке.");
