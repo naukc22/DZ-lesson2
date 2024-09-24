@@ -1,6 +1,6 @@
 package ru.liga.packagesproject;
 
-import ru.liga.packagesproject.controller.ConsoleController;
+import ru.liga.packagesproject.controllers.ConsoleController;
 
 public class Main {
 
