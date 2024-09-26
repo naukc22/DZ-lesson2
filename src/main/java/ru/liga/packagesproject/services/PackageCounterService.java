@@ -6,9 +6,18 @@ import ru.liga.packagesproject.models.Truck;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Сервис для подсчета количества посылок, загруженных в грузовик.
+ */
 @Slf4j
 public class PackageCounterService {
 
+    /**
+     * Подсчитывает количество посылок в заданном грузовике.
+     *
+     * @param truck объект {@link Truck}, в котором производится подсчет
+     * @return мапа, где ключом является символ, обозначающий тип посылки, а значением — количество посылок этого типа
+     */
     public static Map<Character, Integer> countPackages(Truck truck) {
         log.info("Начинаем подсчёт посылок в траке.");
 
@@ -48,6 +57,11 @@ public class PackageCounterService {
         return packageCounts;
     }
 
+    /**
+     * Выводит количество посылок каждого типа на консоль.
+     *
+     * @param packageCounts мапа с количеством посылок для каждого типа
+     */
     public static void printPackageCounts(Map<Character, Integer> packageCounts) {
         for (Map.Entry<Character, Integer> entry : packageCounts.entrySet()) {
             System.out.println("Посылка типа " + entry.getKey() + " - " + entry.getValue() + " шт.");

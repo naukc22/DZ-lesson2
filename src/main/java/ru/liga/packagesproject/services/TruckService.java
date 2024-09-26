@@ -11,12 +11,24 @@ import ru.liga.packagesproject.validators.PackageValidator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Сервис для управления загрузкой посылок в грузовики и вывода информации о загруженных грузовиках.
+ */
 @Slf4j
 public class TruckService {
 
     private static final int TRUCK_WIDTH = 6;
     private static final int TRUCK_HEIGHT = 6;
 
+
+    /**
+     * Загружает посылки в грузовики на основе указанного режима загрузки и количества грузовиков.
+     *
+     * @param packages    список посылок для загрузки
+     * @param loadingMode режим загрузки, см. {@link LoadingMode}
+     * @param truckCount  количество доступных грузовиков
+     * @return список загруженных грузовиков
+     */
     public List<Truck> loadPackages(List<Package> packages, LoadingMode loadingMode, int truckCount) {
         log.info("Начинаем загрузку посылок. Режим загрузки: {}, Количество грузовиков: {}", loadingMode, truckCount);
 
@@ -29,6 +41,11 @@ public class TruckService {
         return trucks;
     }
 
+    /**
+     * Выводит информацию о всех грузовиках на консоль.
+     *
+     * @param trucks список грузовиков
+     */
     public void printAllTrucks(List<Truck> trucks) {
         int truckNumber = 1;
         for (Truck truck : trucks) {
@@ -39,6 +56,11 @@ public class TruckService {
         }
     }
 
+    /**
+     * Подсчитывает количество посылок в каждом грузовике из списка и выводит результат на консоль.
+     *
+     * @param trucks список грузовиков
+     */
     public void countAndPrintPackagesFromTruckList(List<Truck> trucks) {
         for (int i = 0; i < trucks.size(); i++) {
             Truck truck = trucks.get(i);

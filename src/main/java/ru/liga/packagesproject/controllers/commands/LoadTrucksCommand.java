@@ -12,8 +12,17 @@ import ru.liga.packagesproject.validators.InputDataValidator;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Команда для загрузки посылок в траки на основе пользовательского ввода.
+ * Ожидает путь к файлу с посылками, путь для вывода и тип стратегии загрузки.
+ */
 public class LoadTrucksCommand implements MenuCommand {
 
+    /**
+     * Выполняет команду загрузки посылок в траки.
+     *
+     * @param scanner объект {@link Scanner} для чтения ввода пользователя.
+     */
     @Override
     public void execute(Scanner scanner) {
         System.out.println("Введите путь к файлу с посылками:");

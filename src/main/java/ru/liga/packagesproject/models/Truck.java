@@ -37,6 +37,14 @@ public class Truck {
         }
     }
 
+    /**
+     * Пытается загрузить посылку в грузовик на указанной позиции.
+     *
+     * @param packages список доступных посылок
+     * @param row      начальная строка для загрузки
+     * @param col      начальный столбец для загрузки
+     * @return true, если посылка была успешно загружена, иначе false
+     */
     public boolean tryLoadPackage(List<Package> packages, int row, int col) {
         int possibleCapacityWidth = calculatePossibleCapacityWidth(col, row);
         int possibleCapacityHeight = calculatePossibleCapacityHeight(row, col);
@@ -83,6 +91,13 @@ public class Truck {
         return packageWidth <= possibleCapacityWidth && packageHeight <= possibleCapacityHeight && hasValidSupport(pack, row, col);
     }
 
+    /**
+     * Проверяет, занята ли ячейка в указанной позиции.
+     *
+     * @param row строка ячейки
+     * @param col столбец ячейки
+     * @return true, если ячейка занята, иначе false
+     */
     public boolean isCurrentCellOccupied(int row, int col) {
         return body[row][col] != ' ';
     }

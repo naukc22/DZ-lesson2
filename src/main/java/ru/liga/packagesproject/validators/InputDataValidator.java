@@ -8,9 +8,23 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс для валидации входных данных, предоставленных пользователем,
+ * таких как файл с посылками, путь для вывода, тип загрузки и количество траков.
+ */
 @Slf4j
 public class InputDataValidator {
 
+    /**
+     * Валидирует путь к файлу с посылками, путь для вывода, тип загрузки и количество траков.
+     * Если данные не валидны, выбрасывает {@link InputValidationException} с детализированным списком ошибок.
+     *
+     * @param filePath         путь к файлу с посылками.
+     * @param filePathOutput   путь для записи результата.
+     * @param loadingTypeInput строковое представление типа загрузки.
+     * @param truckCount       количество траков для загрузки.
+     * @throws InputValidationException если данные не валидны.
+     */
     public void validateInputData(String filePath, String filePathOutput, String loadingTypeInput, int truckCount) {
         List<String> errors = new ArrayList<>();
 

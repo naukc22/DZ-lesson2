@@ -9,9 +9,23 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * BalancedLoadingStrategy реализует стратегию равномерной загрузки грузовиков.
+ * Посылки равномерно распределяются по тракам в завизимости от объема.
+ */
 @Slf4j
 public class BalancedLoadingStrategy implements LoadingStrategy {
 
+    /**
+     * Метод реализует стратегию загрузки посылок в грузовики.
+     * Посылки сортируются по площади, затем распределяются по грузовикам с наименьшей загрузкой.
+     *
+     * @param packages    список посылок, которые нужно загрузить
+     * @param truckCount  количество грузовиков
+     * @param truckHeight высота грузовиков
+     * @param truckWidth  ширина грузовиков
+     * @return список грузовиков с загруженными посылками
+     */
     @Override
     public List<Truck> loadPackages(List<Package> packages, int truckCount, int truckHeight, int truckWidth) {
 

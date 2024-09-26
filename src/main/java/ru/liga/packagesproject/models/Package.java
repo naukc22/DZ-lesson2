@@ -5,6 +5,9 @@ import lombok.Getter;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Класс, представляющий посылку с её формой.
+ */
 @Getter
 public class Package {
 

@@ -9,9 +9,22 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * EffectiveLoadingStrategy реализует стратегию эффективной загрузки грузовиков.
+ * Посылки загружаются как можно плотнее, занимая наименьшее возможное количество грузовиков.
+ */
 @Slf4j
 public class EffectiveLoadingStrategy implements LoadingStrategy {
 
+    /**
+     * Метод реализует стратегию эффективной загрузки посылок в грузовики.
+     *
+     * @param packages    список посылок, которые нужно загрузить
+     * @param truckCount  количество грузовиков
+     * @param truckHeight высота грузовиков
+     * @param truckWidth  ширина грузовиков
+     * @return список грузовиков с загруженными посылками
+     */
     @Override
     public List<Truck> loadPackages(List<Package> packages, int truckCount, int truckHeight, int truckWidth) {
         List<Truck> trucks = new ArrayList<>();

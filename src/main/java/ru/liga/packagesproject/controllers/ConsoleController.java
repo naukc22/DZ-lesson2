@@ -5,8 +5,16 @@ import ru.liga.packagesproject.controllers.commands.MenuCommandFactory;
 
 import java.util.Scanner;
 
+/**
+ * Основной контроллер консольного интерфейса, отвечающий за взаимодействие с пользователем.
+ * Предоставляет меню для выбора команд и выполняет соответствующие команды на основе пользовательского ввода.
+ */
 public class ConsoleController {
 
+    /**
+     * Запускает консольное меню и ожидает ввод пользователя.
+     * В зависимости от выбранной опции вызывает соответствующую команду.
+     */
     public void start() {
         Scanner scanner = new Scanner(System.in);
         MenuCommandFactory menuCommandFactory = new MenuCommandFactory();

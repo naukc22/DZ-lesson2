@@ -6,16 +6,21 @@ import ru.liga.packagesproject.models.Package;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Класс для валидации посылок на основе их размера по сравнению с размерами кузова трака.
+ * Осуществляет проверку, помещается ли посылка в кузов, и удаляет неподходящие посылки.
+ */
 @Slf4j
 public class PackageValidator {
 
-    private static boolean isValidPackage(Package pack, int truckHeight, int truckWidth) {
-        int packageWidth = pack.getWidth();
-        int packageHeight = pack.getHeight();
-        return packageWidth <= truckWidth && packageHeight <= truckHeight;
-    }
-
-
+    /**
+     * Выполняет сортировку списка посылок, удаляя те, которые не помещаются в кузов.
+     * Логирует информацию о процессе удаления.
+     *
+     * @param packages    список {@link Package}, представляющий посылки.
+     * @param truckHeight высота кузова трака.
+     * @param truckWidth  ширина кузова трака.
+     */
     public static void sortValidPackages(List<Package> packages, int truckHeight, int truckWidth) {
         log.debug("Начало сортировки посылок. Высота кузова: {}, Ширина кузова: {}", truckHeight, truckWidth);
 
@@ -32,4 +37,11 @@ public class PackageValidator {
 
         log.info("Сортировка посылок завершена. Оставшиеся посылки: {}", packages.size());
     }
+
+    private static boolean isValidPackage(Package pack, int truckHeight, int truckWidth) {
+        int packageWidth = pack.getWidth();
+        int packageHeight = pack.getHeight();
+        return packageWidth <= truckWidth && packageHeight <= truckHeight;
+    }
+
 }

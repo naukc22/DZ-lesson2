@@ -9,9 +9,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс для чтения информации о посылках из текстового файла.
+ */
 @Slf4j
 public class PackageFileReader implements InputReader<Package> {
 
+    /**
+     * Читает посылки из указанного текстового файла.
+     * Каждая посылка представлена последовательностью строк, разделённых пустыми строками.
+     *
+     * @param filePath путь к файлу с данными о посылках
+     * @return список объектов {@link Package}, прочитанных из файла
+     * @throws RuntimeException если возникла ошибка ввода/вывода
+     */
     @Override
     public List<Package> read(String filePath) {
         log.info("Начинаем чтение посылок из файла: {}", filePath);
