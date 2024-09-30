@@ -32,12 +32,12 @@ public class BalancedLoadingStrategy implements LoadingStrategy {
         for (Package currentPackage : packages) {
             boolean isPackageLoaded = false;
 
-            trucks.sort(Comparator.comparingInt(Truck::getCurrentLoad));
+
+            sortTruckByCurrentLoad(trucks);
 
             for (Truck truck : trucks) {
-                if (tryLoadPackageIntoTruck(truck, currentPackage)) {
+                if (findSpaceForLoadingPackageIntoTruckAndTryToLoad(truck, currentPackage)) {
                     isPackageLoaded = true;
-                    log.debug("Посылка '{}' загружена в грузовик {}", currentPackage.getName(), truck);
                     break;
                 }
             }
@@ -50,20 +50,10 @@ public class BalancedLoadingStrategy implements LoadingStrategy {
         return trucks;
     }
 
-    private boolean tryLoadPackageIntoTruck(Truck truck, Package pack) {
-        for (int row = truck.getHeight() - 1; row >= 0; row--) {
-            for (int column = 0; column < truck.getWidth(); column++) {
-                if (truck.isCellOccupied(row, column)) {
-                    continue;
-                }
-
-                if (truck.tryLoadPackage(pack, row, column)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    private static void sortTruckByCurrentLoad(List<Truck> trucks) {
+        trucks.sort(Comparator.comparingInt(Truck::getCurrentLoad));
     }
+
 }
 
 

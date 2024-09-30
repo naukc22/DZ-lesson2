@@ -2,24 +2,26 @@ package ru.liga.packagesproject.models;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import ru.liga.packagesproject.controllers.LoadingMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Data
 public class TruckLoadingProcessSettings {
     private final List<TruckSize> truckSizes;
     private final LoadingMode loadingMode;
     private final int truckCount;
 
-    public TruckLoadingProcessSettings(String[] truckSizeStrings, int truckCount, LoadingMode loadingMode) {
+    public TruckLoadingProcessSettings(String[] truckSizeStrings, LoadingMode loadingMode) {
         this.truckSizes = new ArrayList<>();
         for (String sizeString : truckSizeStrings) {
             truckSizes.add(new TruckSize(sizeString));
         }
-        this.truckCount = truckCount;
         this.loadingMode = loadingMode;
+        this.truckCount = truckSizes.size();
     }
 
 

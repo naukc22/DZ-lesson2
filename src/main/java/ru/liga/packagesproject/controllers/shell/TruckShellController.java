@@ -21,19 +21,32 @@ public class TruckShellController {
         this.truckService = truckService;
     }
 
-    @ShellMethod("Load packages into trucks by truck dimensions and package names")
+    @ShellMethod("Load packages into trucks by package names")
     public void loadTrucksByNames(
             @ShellOption(help = "Comma-separated list of package names") String packageNames,
-            @ShellOption(help = "Loading mode (FULL_FILLING or BALANCED)") LoadingMode loadingMode,
-            @ShellOption(help = "Comma-separated list of truck sizes in the format WIDTHxHEIGHT (example: 6x6,4x3,5x5)") String truckSizes,
-            @ShellOption(help = "Number of trucks") int truckCount
+            @ShellOption(help = "Loading mode (EFFECTIVE or BALANCED)") LoadingMode loadingMode,
+            @ShellOption(help = "Comma-separated list of truck sizes in the format WIDTHxHEIGHT (example: 6x6,4x3,5x5)") String truckSizes
     ) {
 
         String[] packageNamesArray = packageNames.split(",");
-        var loadingSettings = new TruckLoadingProcessSettings(truckSizes.split(","), truckCount, loadingMode);
+        var loadingSettings = new TruckLoadingProcessSettings(truckSizes.split(","), loadingMode);
 
-        List<Truck> loadedTrucks = truckService.loadPackagesToTrucksByNames(packageNames.split(","), loadingSettings);// TODO может быть сделать отдельный класс для трак пропертис
+        List<Truck> loadedTrucks = truckService.loadPackagesToTrucksByNames(packageNamesArray, loadingSettings);
         truckService.printAllTrucks(loadedTrucks);
+    }
+
+    @ShellMethod("Load packages into trucks from file")
+    public void loadTrucksFromFile(
+            @ShellOption(help = "Path to the file with packages") String filePath,
+            @ShellOption(help = "Loading mode (EFFECTIVE or BALANCED)") LoadingMode loadingMode,
+            @ShellOption(help = "Comma-separated list of truck sizes in the format WIDTHxHEIGHT (example: 6x6,4x3,5x5)") String truckSizes
+    ) {
+        TruckLoadingProcessSettings settings = new TruckLoadingProcessSettings(truckSizes.split(" "), loadingMode);
+
+        List<Truck> trucks = truckService.loadPackagesToTrucksFromFile(filePath, settings);
+        truckService.printAllTrucks(trucks);
+
+
     }
 
 //    @ShellMethod("Unload all trucks and display the list of packages")

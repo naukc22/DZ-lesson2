@@ -35,56 +35,28 @@ public class EffectiveLoadingStrategy implements LoadingStrategy {
 
             for (int i = 0; i < packages.size(); ) {
                 Package currentPackage = packages.get(i);
-                boolean isLoaded = tryToLoadPackageIntoTruck(currentTruck, currentPackage);
+                boolean isLoaded = findSpaceForLoadingPackageIntoTruckAndTryToLoad(currentTruck, currentPackage);
 
                 if (isLoaded) {
-                    // Убираем загруженную посылку из списка
                     log.debug("Посылка '{}' загружена в грузовик {}.", currentPackage.getName(), currentTruckIndex + 1);
                     packages.remove(i);
                 } else {
-                    // Если посылка не поместилась, переходим к следующей
                     i++;
                 }
             }
 
-            // Если текущий грузовик полностью заполнен, переходим к следующему
             currentTruckIndex++;
         }
 
-        // Если остались посылки, но грузовики закончились
         if (!packages.isEmpty()) {
-            log.error("Ошибка: Посылки не поместились во все доступные грузовики.");
-            throw new RuntimeException("Ошибка: Посылки не поместились во все доступные грузовики.");
+            log.error("Ошибка: Посылки не поместились во все доступные грузовики. Список не поместившихся посылок: {}", packages);
+            throw new RuntimeException();
         }
 
         return trucks;
     }
 
-    /**
-     * Попытка загрузить посылку в текущий грузовик.
-     *
-     * @param truck текущий грузовик
-     * @param pack  посылка, которую нужно загрузить
-     * @return true, если посылка успешно загружена, иначе false
-     */
-    private boolean tryToLoadPackageIntoTruck(Truck truck, Package pack) {
-        // Пытаемся найти место в грузовике, начиная с нижнего левого угла
-        for (int row = truck.getHeight() - 1; row >= 0; row--) {
-            for (int column = 0; column < truck.getWidth(); column++) {
-                if (!truck.isCellOccupied(row, column)) {
-                    if (truck.tryLoadPackage(pack, row, column)) {
-                        log.debug("Посылка '{}' загружена в грузовик на позицию ({}, {})", pack.getName(), row, column);
-                        return true; // Посылка успешно загружена
-                    }
-                }
-            }
-        }
-        return false; // Если посылка не поместилась в грузовик
-    }
 
-    private void sortTrucksByAreaInDescendingOrder(List<Truck> trucks) {
-        trucks.sort((p1, p2) -> Integer.compare(p2.getArea(), p1.getArea()));
-    }
 
 
 }

@@ -1,9 +1,11 @@
 package ru.liga.packagesproject.validators;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import ru.liga.packagesproject.models.Package;
+import ru.liga.packagesproject.services.PackageService;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,39 +13,14 @@ import java.util.List;
  * Осуществляет проверку, помещается ли посылка в кузов, и удаляет неподходящие посылки.
  */
 @Slf4j
+@Component
 public class PackageValidator {
 
-    /**
-     * Выполняет сортировку списка посылок, удаляя те, которые не помещаются в кузов.
-     * Логирует информацию о процессе удаления.
-     *
-     * @param packages    список {@link Package}, представляющий посылки.
-     * @param truckHeight высота кузова трака.
-     * @param truckWidth  ширина кузова трака.
-     */
-    public static void sortValidPackages(List<Package> packages, int truckHeight, int truckWidth) {
-        log.debug("Начало сортировки посылок. Высота кузова: {}, Ширина кузова: {}", truckHeight, truckWidth);
+    private final PackageService packageService;
 
-        Iterator<Package> iterator = packages.iterator();
-        int index = 0;
-        while (iterator.hasNext()) {
-            Package pack = iterator.next();
-            index++;
-            if (!isValidPackage(pack, truckHeight, truckWidth)) {
-                iterator.remove();
-                log.info("Посылка #{} удалена: размер больше, чем кузов.", index);
-            }
-        }
-
-        log.info("Сортировка посылок завершена. Оставшиеся посылки: {}", packages.size());
+    public PackageValidator(PackageService packageService) {
+        this.packageService = packageService;
     }
-
-    private static boolean isValidPackage(Package pack, int truckHeight, int truckWidth) {
-        int packageWidth = pack.getWidth();
-        int packageHeight = pack.getHeight();
-        return packageWidth <= truckWidth && packageHeight <= truckHeight;
-    }
-
 
 
 //    /**

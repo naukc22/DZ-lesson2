@@ -46,6 +46,6 @@ public class PackageShellController {
 
     @ShellMethod("Показать все посылки")
     public void listPackages() {
-        packageService.listAllPackages().forEach(System.out::println);
+        packageService.getAllPackagesList().forEach(System.out::println);
     }
 }
