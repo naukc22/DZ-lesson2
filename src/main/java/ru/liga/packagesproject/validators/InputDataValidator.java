@@ -2,7 +2,7 @@ package ru.liga.packagesproject.validators;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.liga.packagesproject.exceptions.InputValidationException;
-import ru.liga.packagesproject.models.LoadingMode;
+import ru.liga.packagesproject.controllers.LoadingMode;
 
 import java.io.File;
 import java.util.ArrayList;

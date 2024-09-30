@@ -1,62 +1,81 @@
 package ru.liga.packagesproject.models;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Класс, представляющий посылку с её формой.
+ * Класс, представляющий посылку с её формой, названием, и символом из которого она состоит..
  */
+
 @Getter
+@Setter
 public class Package {
 
-    private final int[][] shape;
+    private String name;
+    private char symbol;
+    private char[][] form;
 
-    public Package(List<String> packageLines) {
-        this.shape = convertStringsToPackage(packageLines);
+    public Package(String name, char symbol, List<String> packageLines) {
+        this.name = name;
+        this.symbol = symbol;
+        this.form = convertStringsToPackageForm(packageLines);
     }
 
-    public Package(int[][] shape) {
-        this.shape = shape;
+//    public Package(char[][] form) {
+//        this.form = form;
+//    }
+
+    private static char[][] convertStringsToPackageForm(List<String> packageLines) {
+        char[][] shape = new char[packageLines.size()][];
+        for (int i = 0; i < packageLines.size(); i++) {
+            String line = packageLines.get(i);
+            shape[i] = line.toCharArray();
+        }
+        return shape;
     }
 
     public int getHeight() {
-        return shape.length;
+        return form.length;
     }
 
     public int getWidth() {
-        return Arrays.stream(shape)
+        return Arrays.stream(form)
                 .mapToInt(arr -> arr.length)
                 .max()
                 .orElse(0);
     }
 
     public int getBaseLength() {
-        return shape[shape.length - 1].length;
+        return form[form.length - 1].length;
     }
 
     public int getArea() {
-        return Arrays.stream(shape)
-                .flatMapToInt(Arrays::stream)
-                .map(cell -> cell != 0 ? 1 : 0)
-                .sum();
-    }
+        int area = 0;
 
-    private static int[][] convertStringsToPackage(List<String> packageLines) {
-        int[][] shape = new int[packageLines.size()][];
-        for (int i = 0; i < packageLines.size(); i++) {
-            String line = packageLines.get(i);
-            shape[i] = new int[line.length()];
-            for (int j = 0; j < line.length(); j++) {
-                shape[i][j] = Character.getNumericValue(line.charAt(j));
+        for (char[] row : form) {
+            for (char cell : row) {
+                if (cell != ' ') {
+                    area++;
+                }
             }
         }
-        return shape;
+
+        return area;
     }
 
     @Override
     public String toString() {
-        return "Тип " + shape[0][0]; // Или любой другой способ уникальной идентификации
+        StringBuilder sb = new StringBuilder();
+        sb.append("Name: ").append(name).append("\n");
+        sb.append("Symbol: ").append(symbol).append("\n");
+        sb.append("Form:\n");
+        for (char[] line : form) {
+            sb.append(line).append("\n");
+        }
+        return sb.toString();
     }
+
 }

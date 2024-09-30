@@ -44,4 +44,21 @@ public class PackageValidator {
         return packageWidth <= truckWidth && packageHeight <= truckHeight;
     }
 
+
+
+//    /**
+//     * Проверяет, если длины массивов внутри двумерного массива одинаковые, то возвращает true.
+//     *
+//     * @param form форма посылки.
+//     */
+//    public static boolean isHasSquareForm(char[][] form) {
+//        int lengthOfFirstLine = form[0].length;
+//        for (char[] chars : form) {
+//            if (lengthOfFirstLine != chars.length) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+
 }

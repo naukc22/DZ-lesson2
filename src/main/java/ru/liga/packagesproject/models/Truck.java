@@ -3,6 +3,7 @@ package ru.liga.packagesproject.models;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -11,11 +12,13 @@ public class Truck {
     private final int height;
     private final int width;
     private char[][] body;
+    private List<Package> loadedPackages;
 
     public Truck(int height, int width) {
         this.height = height;
         this.width = width;
         initializeBody();
+        loadedPackages = new ArrayList<>();
     }
 
     private void initializeBody() {
@@ -23,7 +26,7 @@ public class Truck {
         fillBodyWithWhitespace();
     }
 
-    public Truck(char[][] body) {
+    public Truck(char[][] body) {     // TODO добавить посылки, которые определяются при разгрузке
         this.body = body;
         this.width = body[0].length;
         this.height = body.length;
@@ -36,30 +39,27 @@ public class Truck {
             }
         }
     }
-
     /**
      * Пытается загрузить посылку в грузовик на указанной позиции.
      *
-     * @param packages список доступных посылок
-     * @param row      начальная строка для загрузки
-     * @param col      начальный столбец для загрузки
+     * @param pack посылка, которую нужно попробовать вместить
+     * @param row  начальная строка для загрузки
+     * @param col  начальный столбец для загрузки
      * @return true, если посылка была успешно загружена, иначе false
      */
-    public boolean tryLoadPackage(List<Package> packages, int row, int col) {
+    public boolean tryLoadPackage(Package pack, int row, int col) {
         int possibleCapacityWidth = calculatePossibleCapacityWidth(col, row);
         int possibleCapacityHeight = calculatePossibleCapacityHeight(row, col);
 
-        for (Package pack : packages) {
-            int packageWidth = pack.getWidth();
-            int packageHeight = pack.getHeight();
+        int packageWidth = pack.getWidth();
+        int packageHeight = pack.getHeight();
 
-            if (isPackageFitInCapacity(row, col, pack, packageWidth, possibleCapacityWidth, packageHeight, possibleCapacityHeight)) {
-                loadPackage(row, col, pack);
-                packages.remove(pack);
-                log.info("Посылка загружена в грузовик на позицию ({}, {}). Текущая нагрузка: {}", row, col, getCurrentLoad());
-                return true;
-            }
+        if (isPackageFitInCapacity(row, col, pack, packageWidth, possibleCapacityWidth, packageHeight, possibleCapacityHeight)) {
+            loadPackage(row, col, pack);
+            log.info("Посылка загружена в {} на позицию ({}, {}). Текущая нагрузка: {}", this, row, col, getCurrentLoad());
+            return true;
         }
+
         return false;
     }
 
@@ -87,7 +87,15 @@ public class Truck {
         System.out.println("+".repeat(width + 2));
     }
 
-    private boolean isPackageFitInCapacity(int row, int col, Package pack, int packageWidth, int possibleCapacityWidth, int packageHeight, int possibleCapacityHeight) {
+    private boolean isPackageFitInCapacity(
+            int row,
+            int col,
+            Package pack,
+            int packageWidth,
+            int possibleCapacityWidth,
+            int packageHeight,
+            int possibleCapacityHeight
+    ) {
         return packageWidth <= possibleCapacityWidth && packageHeight <= possibleCapacityHeight && hasValidSupport(pack, row, col);
     }
 
@@ -98,7 +106,7 @@ public class Truck {
      * @param col столбец ячейки
      * @return true, если ячейка занята, иначе false
      */
-    public boolean isCurrentCellOccupied(int row, int col) {
+    public boolean isCellOccupied(int row, int col) {
         return body[row][col] != ' ';
     }
 
@@ -142,16 +150,19 @@ public class Truck {
     }
 
     private void loadPackage(int i, int j, Package pack) {
-        int[][] shape = pack.getShape();
+        char[][] shape = pack.getForm();
         int packHeight = pack.getHeight();
 
         for (int row = 0; row < packHeight; row++) {
             int packRow = packHeight - 1 - row;
-
-            for (int col = 0; col < shape[packRow].length; col++) {
-                body[i - row][j + col] = (char) (shape[packRow][col] + '0');
-            }
+            System.arraycopy(shape[packRow], 0, body[i - row], j, shape[packRow].length);
         }
+
+        loadedPackages.add(pack);
+    }
+
+    public int getArea() {
+        return width * height;
     }
 
 }

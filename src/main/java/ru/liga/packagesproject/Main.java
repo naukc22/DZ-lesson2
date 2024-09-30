@@ -1,11 +1,15 @@
 package ru.liga.packagesproject;
 
-import ru.liga.packagesproject.controllers.ConsoleController;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class Main {
 
     public static void main(String[] args) {
-        ConsoleController consoleController = new ConsoleController();
-        consoleController.start();
+        SpringApplication.run(Main.class, args);
+//        ConsoleController consoleController = new ConsoleController();
+//        consoleController.start();
+
     }
 }
