@@ -3,33 +3,47 @@ package ru.liga.packagesproject.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.liga.packagesproject.dto.TruckBodyDto;
 import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.models.Truck;
 import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
-import ru.liga.packagesproject.repository.PackageRepository;
+import ru.liga.packagesproject.services.IO.input.InputReader;
 import ru.liga.packagesproject.services.IO.input.PackageFileReader;
+import ru.liga.packagesproject.services.IO.input.TruckBodiesJsonReader;
 import ru.liga.packagesproject.services.truckloading.truckloadingstrategies.LoadingStrategy;
 import ru.liga.packagesproject.services.truckloading.truckloadingstrategies.LoadingStrategyFactory;
-import ru.liga.packagesproject.validators.PackageValidator;
+import ru.liga.packagesproject.services.truckunloading.TruckUnloader;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Сервис для управления загрузкой посылок в грузовики и вывода информации о загруженных грузовиках.
+ * Сервис для управления грузовиками - погрузка и разгрузка.
  */
 @Slf4j
 @Service
 public class TruckService {
 
     private final PackageService packageService;
+    private final TruckUnloader truckUnloader;
+    private final InputReader<TruckBodyDto> truckBodiesJsonReader;
 
     @Autowired
-    public TruckService(PackageService packageService, PackageValidator packageValidator) {
+    public TruckService(PackageService packageService, TruckUnloader truckUnloader, TruckBodiesJsonReader truckBodiesJsonReader) {
         this.packageService = packageService;
+        this.truckUnloader = truckUnloader;
+        this.truckBodiesJsonReader = truckBodiesJsonReader;
     }
 
+    /**
+     * Принимает список из названий посылок. Проверяет их наличие в базе.
+     * Все валидные посылки загружает в траки, размеры которых также передаются в виде TruckLoadingProcessSettings
+     *
+     * @param packageNames список названий посылок для загрузки
+     * @param settings     параметры процесса загрузки траков
+     * @return список загруженных грузовиков
+     */
     public List<Truck> loadPackagesToTrucksByNames(String[] packageNames, TruckLoadingProcessSettings settings) {
         List<Package> loadedPackages = new ArrayList<>();
 
@@ -50,6 +64,14 @@ public class TruckService {
         return loadTrucks(loadedPackages, settings);
     }
 
+    /**
+     * Принимает список из названий посылок. Вызывает ридер для считывания посылок из файла. Проверяет их наличие в базе.
+     * Все валидные посылки загружает в траки, размеры которых также передаются в виде TruckLoadingProcessSettings
+     *
+     * @param filePath список названий посылок для загрузки
+     * @param settings параметры процесса загрузки траков
+     * @return список загруженных грузовиков
+     */
     public List<Truck> loadPackagesToTrucksFromFile(String filePath, TruckLoadingProcessSettings settings) {
 
         PackageFileReader fileReader = new PackageFileReader();
@@ -69,13 +91,6 @@ public class TruckService {
         return loadTrucks(packagesToLoad, settings);
     }
 
-    /**
-     * Загружает посылки в грузовики на основе указанного режима загрузки и количества грузовиков.
-     *
-     * @param packagesToLoad список посылок для загрузки
-     * @param settings       параметры процесса загрузки траков
-     * @return список загруженных грузовиков
-     */
     private List<Truck> loadTrucks(List<Package> packagesToLoad, TruckLoadingProcessSettings settings) {
         log.info("Начинаем загрузку посылок. Режим загрузки: {}, Количество грузовиков: {}", settings.getLoadingMode(), settings.getTruckCount());
         List<Truck> emptyTrucksForLoading = new ArrayList<>();
@@ -91,6 +106,15 @@ public class TruckService {
         return trucks;
     }
 
+    public List<Truck> unloadTrucksFromJsonFile(String filePath) {
+        List<TruckBodyDto> truckBodies = truckBodiesJsonReader.read(filePath);
+        List<Truck> trucks = new ArrayList<>();
+        for (TruckBodyDto truckBody : truckBodies) {
+            trucks.add(truckUnloader.unloadTruck(truckBody));
+        }
+        return trucks;
+    }
+
     /**
      * Выводит информацию о всех грузовиках на консоль.
      *
@@ -100,8 +124,11 @@ public class TruckService {
         int truckNumber = 1;
         for (Truck truck : trucks) {
             log.info("Печать информации о грузовике {}", truckNumber);
-            System.out.println("Truck " + truckNumber + ":");
-            truck.printTruckToConsole();
+            System.out.println("Тело");
+            truck.printTruckBodyToConsole();
+            System.out.println("Загруженные посылки: ");
+            truck.getLoadedPackages().forEach((key, value) -> System.out.println(key.getName() + " : " + value));
+
             truckNumber++;
         }
     }

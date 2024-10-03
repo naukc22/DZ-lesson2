@@ -32,7 +32,6 @@ public class BalancedLoadingStrategy implements LoadingStrategy {
         for (Package currentPackage : packages) {
             boolean isPackageLoaded = false;
 
-
             sortTruckByCurrentLoad(trucks);
 
             for (Truck truck : trucks) {

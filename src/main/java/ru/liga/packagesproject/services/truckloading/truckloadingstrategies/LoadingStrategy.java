@@ -5,18 +5,9 @@ import ru.liga.packagesproject.models.Truck;
 
 import java.util.List;
 
-public interface LoadingStrategy {
+public interface LoadingStrategy {              // ВОПРОС Или лучше абстрактный класс вместо интерфейса?
 
     List<Truck> loadPackages(List<Package> packages, List<Truck> trucks);
-
-    /**
-     * Сортируем посылки в порядке убывания площади, чтобы максимальные посылки были первыми.
-     *
-     * @param packages список посылок
-     */
-    default void sortPackagesByAreaInDescendingOrder(List<Package> packages) {
-        packages.sort((p1, p2) -> Integer.compare(p2.getArea(), p1.getArea()));
-    }
 
     /**
      * Проходится по текущему траку сверху внизу, слева направо. Если нашлась свободная ячейка, вызывается метод tryLoadPackage()
@@ -36,6 +27,15 @@ public interface LoadingStrategy {
             }
         }
         return false;
+    }
+
+    /**
+     * Сортируем посылки в порядке убывания площади, чтобы максимальные посылки были первыми.
+     *
+     * @param packages список посылок
+     */
+    default void sortPackagesByAreaInDescendingOrder(List<Package> packages) {
+        packages.sort((p1, p2) -> Integer.compare(p2.getArea(), p1.getArea()));
     }
 
     default void sortTrucksByAreaInDescendingOrder(List<Truck> trucks) {

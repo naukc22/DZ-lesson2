@@ -3,8 +3,8 @@ package ru.liga.packagesproject.models;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Slf4j
@@ -12,19 +12,20 @@ public class Truck {
     private final int height;
     private final int width;
     private char[][] body;
-    private List<Package> loadedPackages;
+    private final Map<Package, Integer> loadedPackages;
 
     public Truck(int height, int width) {
         this.height = height;
         this.width = width;
         initializeBody();
-        loadedPackages = new ArrayList<>();
+        this.loadedPackages = new HashMap<>();
     }
 
-    public Truck(char[][] body) {     // TODO добавить посылки, которые определяются при разгрузке
+    public Truck(char[][] body, Map<Package, Integer> loadedPackages) {
         this.body = body;
         this.width = body[0].length;
         this.height = body.length;
+        this.loadedPackages = loadedPackages;
     }
 
     private void initializeBody() {
@@ -53,7 +54,7 @@ public class Truck {
         return load;
     }
 
-    public void printTruckToConsole() {
+    public void printTruckBodyToConsole() {
         for (char[] row : body) {
             System.out.print("+");
             for (char cell : row) {
@@ -76,6 +77,13 @@ public class Truck {
         return body[row][col] != ' ';
     }
 
+    /**
+     * Грузит посылку в передаваемые координаты.
+     *
+     * @param i    колонка
+     * @param j    строка
+     * @param pack посылка
+     */
     public void loadPackage(int i, int j, Package pack) {
         char[][] shape = pack.getForm();
         int packHeight = pack.getHeight();
@@ -85,7 +93,7 @@ public class Truck {
             System.arraycopy(shape[packRow], 0, body[i - row], j, shape[packRow].length);
         }
 
-        loadedPackages.add(pack);
+        loadedPackages.put(pack, loadedPackages.getOrDefault(pack, 0) + 1);
         log.info("Посылка загружена в {} на позицию ({}, {}). Текущая нагрузка: {}", this, i, j, getCurrentLoad());
     }
 

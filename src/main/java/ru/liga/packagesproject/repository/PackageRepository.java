@@ -12,7 +12,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class PackageRepository {
@@ -25,6 +27,9 @@ public class PackageRepository {
         this.packageStorage = loadPackagesFromFile();
     }
 
+    /**
+     * Выгрузка данных в оперативную память из базы (json файл).
+     */
     private Map<String, Package> loadPackagesFromFile() {
 
         Map<String, Package> storage = new HashMap<>();
@@ -47,6 +52,9 @@ public class PackageRepository {
         return storage;
     }
 
+    /**
+     * Обновление базы данных (json файл). Вызывается каждый раз, при изменении мапы - packageStorage, которая держит базу данных в оперативной памяти.
+     */
     private void uploadPackagesFromMapToFile() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(STORAGE_FILE_PATH)) {
@@ -63,6 +71,12 @@ public class PackageRepository {
 
     public Package findByName(String name) {
         return packageStorage.get(name);
+    }
+
+    public List<Package> findBySymbol(char symbol) {
+        return findAll().values().stream()
+                .filter(pack -> pack.getSymbol() == symbol)
+                .collect(Collectors.toList());
     }
 
     public void updatePackage(String name, Package updatedPackage) {

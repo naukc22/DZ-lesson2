@@ -1,0 +1,114 @@
+package ru.liga.packagesproject.services.truckunloading;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ru.liga.packagesproject.dto.TruckBodyDto;
+import ru.liga.packagesproject.models.Package;
+import ru.liga.packagesproject.models.Truck;
+import ru.liga.packagesproject.services.PackageService;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class TruckUnloader {
+
+    private final PackageService packageService;
+
+    @Autowired
+    public TruckUnloader(PackageService packageService) {
+        this.packageService = packageService;
+    }
+
+    public Truck unloadTruck(TruckBodyDto truckBody) {
+        Map<Character, Integer> symbolCounts = countSymbols(truckBody.getBody());
+        Map<Package, Integer> packageCounts = parsePackagesInTruckBody(truckBody, symbolCounts);
+
+//        List<Package> packagesForLoading = new ArrayList<>();
+//
+//        for (Map.Entry<Package, Integer> entry : packageCounts.entrySet()) {
+//            Package pkg = entry.getKey();
+//            int count = entry.getValue();
+//            for (int i = 0; i < count; i++) {
+//                packagesForLoading.add(pkg);
+//            }
+//        }
+
+        return new Truck(truckBody.getBody(), packageCounts);
+    }
+
+    private Map<Package, Integer> parsePackagesInTruckBody(TruckBodyDto truckBody, Map<Character, Integer> symbolCounts) {
+        Map<Package, Integer> parsedPackages = new HashMap<>();
+        for (Map.Entry<Character, Integer> entry : symbolCounts.entrySet()) {
+            char symbol = entry.getKey();
+            int totalSymbols = entry.getValue();
+
+            List<Package> possiblePackages = packageService.getPackagesBySymbol(symbol);
+
+            for (Package pkg : possiblePackages) {
+                int packageArea = pkg.getArea();
+                int count = totalSymbols / packageArea;
+
+                if (count > 0 && matchesForm(truckBody.getBody(), pkg.getForm())) {
+                    parsedPackages.put(pkg, count);
+                }
+            }
+        }
+        return parsedPackages;
+    }
+
+    private Map<Character, Integer> countSymbols(char[][] truckBody) {
+        Map<Character, Integer> counts = new HashMap<>();
+        for (char[] row : truckBody) {
+            for (char cell : row) {
+                if (cell != ' ') {
+                    counts.put(cell, counts.getOrDefault(cell, 0) + 1);
+                }
+            }
+        }
+        return counts;
+    }
+
+    private boolean matchesForm(char[][] truckBody, char[][] form) {
+        int truckRows = truckBody.length;
+        int truckCols = truckBody[0].length;
+        int formRows = form.length;
+        int formCols = form[0].length;
+
+        for (int i = 0; i <= truckRows - formRows; i++) {
+            for (int j = 0; j <= truckCols - formCols; j++) {
+                if (matchesAtPosition(truckBody, form, i, j)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Проверяет, соответствует ли форма посылки участку грузовика начиная с позиции (startRow, startCol)
+     */
+    private boolean matchesAtPosition(char[][] truckBody, char[][] form, int startRow, int startCol) {
+        int formRows = form.length;
+        int formCols = form[0].length;
+
+        for (int i = 0; i < formRows; i++) {
+            for (int j = 0; j < formCols; j++) {
+                char formCell = form[i][j];
+                char truckCell = truckBody[startRow + i][startCol + j];
+
+                // Если ячейка формы не пустая (' '), она должна совпадать с ячейкой грузовика
+                if (formCell != ' ' && formCell != truckCell) {
+                    return false;
+                }
+
+                // Если ячейка формы пустая (' '), то можем игнорировать, что лежит в траке
+            }
+        }
+
+        return true;
+    }
+}
+

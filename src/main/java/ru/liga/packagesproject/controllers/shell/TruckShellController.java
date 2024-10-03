@@ -49,14 +49,11 @@ public class TruckShellController {
 
     }
 
-//    @ShellMethod("Unload all trucks and display the list of packages")
-//    public void unloadAllTrucks() {
-//        truckService.unloadAllTrucks();
-//    }
-//
-//    @ShellMethod("Show current state of all trucks")
-//    public void showTrucksState() {
-//        String trucksState = truckService.getTrucksState();
-//        System.out.println(trucksState);
-//    }
+    @ShellMethod("Unload all trucks and display the list of packages")
+    public void unloadAllTrucks(
+            @ShellOption(help = "Path to the json file with trucks") String filePath
+    ) {
+        List<Truck> trucks = truckService.unloadTrucksFromJsonFile(filePath);
+        truckService.printAllTrucks(trucks);
+    }
 }

@@ -22,7 +22,7 @@ public class EffectiveLoadingStrategy implements LoadingStrategy {
      */
     @Override
     public List<Truck> loadPackages(List<Package> packages, List<Truck> trucks) {
-        // Сортируем посылки по площади в порядке убывания для максимального заполнения грузовика
+
         sortPackagesByAreaInDescendingOrder(packages);
         sortTrucksByAreaInDescendingOrder(trucks);
         log.debug("Посылки отсортированы по размеру: {}", packages);
@@ -55,8 +55,6 @@ public class EffectiveLoadingStrategy implements LoadingStrategy {
 
         return trucks;
     }
-
-
 
 
 }

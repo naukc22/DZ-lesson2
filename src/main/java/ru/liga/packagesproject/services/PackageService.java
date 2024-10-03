@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.repository.PackageRepository;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,9 +30,17 @@ public class PackageService {
     public Package getPackageByName(String name) {
         Package pack = packageRepository.findByName(name);
         if (pack == null) {
-            throw new IllegalArgumentException("Посылка не найдена");
+            throw new RuntimeException("Посылка не найдена : " + name);
         }
         return pack;
+    }
+
+    public List<Package> getPackagesBySymbol(char symbol) {
+        List<Package> packages = packageRepository.findBySymbol(symbol);
+        if (packages == null) {
+            throw new RuntimeException("Посылки с символом " + symbol + " не найдены.");
+        }
+        return packages;
     }
 
     public void editPackage(String name, char newSymbol, List<String> newFormStr) {
@@ -50,7 +57,7 @@ public class PackageService {
 
     public void removePackage(String name) {
         if (packageRepository.findByName(name) == null) {
-            throw new IllegalArgumentException("Посылка не найдена");
+            throw new RuntimeException("Посылка не найдена : " + name);
         }
         packageRepository.removePackage(name);
     }

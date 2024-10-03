@@ -1,7 +1,6 @@
 package ru.liga.packagesproject.services.IO.input;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.liga.packagesproject.models.Package;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,7 +12,7 @@ import java.util.List;
  * Класс для чтения информации о посылках из текстового файла.
  */
 @Slf4j
-public class PackageFileReader implements InputReader<Package> {
+public class PackageFileReader implements InputReader<List<String>> {
 
     /**
      * Читает посылки из указанного текстового файла.
