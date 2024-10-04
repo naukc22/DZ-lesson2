@@ -1,13 +1,15 @@
 package ru.liga.packagesproject.services.truckloading.truckloadingstrategies;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.models.Truck;
 
 import java.util.List;
 
-public interface LoadingStrategy {              // ВОПРОС Или лучше абстрактный класс вместо интерфейса?
+@Slf4j
+public abstract class LoadingStrategy {              // ВОПРОС Или лучше абстрактный класс вместо интерфейса?
 
-    List<Truck> loadPackages(List<Package> packages, List<Truck> trucks);
+    public abstract List<Truck> loadPackages(List<Package> packages, List<Truck> trucks);
 
     /**
      * Проходится по текущему траку сверху внизу, слева направо. Если нашлась свободная ячейка, вызывается метод tryLoadPackage()
@@ -16,7 +18,7 @@ public interface LoadingStrategy {              // ВОПРОС Или лучш�
      * @param pack  посылка, которую нужно загрузить
      * @return true, если посылка успешно загружена, иначе false
      */
-    default boolean findSpaceForLoadingPackageIntoTruckAndTryToLoad(Truck truck, Package pack) {
+    boolean findSpaceForLoadingPackageIntoTruckAndTryToLoad(Truck truck, Package pack) {
         for (int row = truck.getHeight() - 1; row >= 0; row--) {
             for (int column = 0; column < truck.getWidth(); column++) {
                 if (!truck.isCellOccupied(row, column)) {
@@ -34,11 +36,11 @@ public interface LoadingStrategy {              // ВОПРОС Или лучш�
      *
      * @param packages список посылок
      */
-    default void sortPackagesByAreaInDescendingOrder(List<Package> packages) {
+    void sortPackagesByAreaInDescendingOrder(List<Package> packages) {
         packages.sort((p1, p2) -> Integer.compare(p2.getArea(), p1.getArea()));
     }
 
-    default void sortTrucksByAreaInDescendingOrder(List<Truck> trucks) {
+    void sortTrucksByAreaInDescendingOrder(List<Truck> trucks) {
         trucks.sort((p1, p2) -> Integer.compare(p2.getArea(), p1.getArea()));
     }
 
@@ -52,19 +54,22 @@ public interface LoadingStrategy {              // ВОПРОС Или лучш�
      * @param col   начальный столбец для загрузки
      * @return true, если посылка была успешно загружена, иначе false
      */
-    default boolean tryLoadPackage(Truck truck, Package pack, int row, int col) {
+    boolean tryLoadPackage(Truck truck, Package pack, int row, int col) {
         int possibleCapacityWidth = calculatePossibleCapacityWidth(truck, col, row);
         int possibleCapacityHeight = calculatePossibleCapacityHeight(truck, row, col);
 
         int packageWidth = pack.getWidth();
         int packageHeight = pack.getHeight();
 
-        if (isPackageFitInCapacity(packageWidth, possibleCapacityWidth, packageHeight, possibleCapacityHeight) && hasValidSupport(truck, pack, row, col)) {
+        if (isPackageFitInCapacity(packageWidth, possibleCapacityWidth, packageHeight, possibleCapacityHeight)
+                && hasValidSupport(truck, pack, row, col)
+                && canBeLoad(row, col, pack, truck)) {
             truck.loadPackage(row, col, pack);
             return true;
+        } else {
+            return false;
         }
 
-        return false;
     }
 
     private boolean isPackageFitInCapacity(
@@ -74,6 +79,36 @@ public interface LoadingStrategy {              // ВОПРОС Или лучш�
             int possibleCapacityHeight
     ) {
         return packageWidth <= possibleCapacityWidth && packageHeight <= possibleCapacityHeight;
+    }
+
+    private boolean canBeLoad(int i, int j, Package pack, Truck truck) {
+        char[][] shape = pack.getForm();
+        int packHeight = pack.getHeight();
+        int packWidth = pack.getWidth();
+
+        for (int row = 0; row < packHeight; row++) {
+            int targetRow = i - row;
+
+            if (targetRow < 0 || targetRow >= truck.getHeight()) {
+                log.debug("Посылка не помещается в грузовик по вертикали");
+                return false;
+            }
+
+            for (int col = 0; col < packWidth; col++) {
+                int targetCol = j + col;
+
+                if (targetCol < 0 || targetCol >= truck.getWidth()) {
+                    log.debug("Посылка не помещается в грузовик по горизонтали");
+                    return false;
+                }
+
+                if (shape[row][col] != ' ' && truck.getBody()[targetRow][targetCol] != ' ') {
+                    log.debug("Ячейка ({}, {}) уже занята, посылку невозможно разместить", targetRow, targetCol);
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private boolean hasValidSupport(Truck truck, Package pack, int row, int column) {

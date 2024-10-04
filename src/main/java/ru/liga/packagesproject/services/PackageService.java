@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.repository.PackageRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class PackageService {
     }
 
     public List<Package> getAllPackagesList() {
-        return (List<Package>) packageRepository.findAll().values();
+        return new ArrayList<>(packageRepository.findAll().values());
     }
 
     public Optional<Package> getPackageByForm(List<String> formStr) {

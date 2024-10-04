@@ -21,37 +21,38 @@ public class TruckShellController {
         this.truckService = truckService;
     }
 
-    @ShellMethod("Load packages into trucks by package names")
+    @ShellMethod("Метод загрузки траков посылками по списку имен")
     public void loadTrucksByNames(
-            @ShellOption(help = "Comma-separated list of package names") String packageNames,
-            @ShellOption(help = "Loading mode (EFFECTIVE or BALANCED)") LoadingMode loadingMode,
-            @ShellOption(help = "Comma-separated list of truck sizes in the format WIDTHxHEIGHT (example: 6x6,4x3,5x5)") String truckSizes
+            @ShellOption(help = "Список имен посылок, разделенных запятой") String packageNames,
+            @ShellOption(help = "Путь до json файла для записи загруженных траков") String filePathDestination,
+            @ShellOption(help = "Метод загрузки (EFFECTIVE or BALANCED)") LoadingMode loadingMode,
+            @ShellOption(help = "Список размеров траков для загрузки, разделенных запятыми в формате ШИРИНАxВЫСОТА (пример: 6x6,4x3,5x5)") String truckSizes
     ) {
-
         String[] packageNamesArray = packageNames.split(",");
         var loadingSettings = new TruckLoadingProcessSettings(truckSizes.split(","), loadingMode);
 
         List<Truck> loadedTrucks = truckService.loadPackagesToTrucksByNames(packageNamesArray, loadingSettings);
         truckService.printAllTrucks(loadedTrucks);
+        truckService.writeTrucksToJsonFile(loadedTrucks, filePathDestination);
     }
 
-    @ShellMethod("Load packages into trucks from file")
+    @ShellMethod("Метод загрузки траков посылками из файла")
     public void loadTrucksFromFile(
-            @ShellOption(help = "Path to the file with packages") String filePath,
-            @ShellOption(help = "Loading mode (EFFECTIVE or BALANCED)") LoadingMode loadingMode,
-            @ShellOption(help = "Comma-separated list of truck sizes in the format WIDTHxHEIGHT (example: 6x6,4x3,5x5)") String truckSizes
+            @ShellOption(help = "Путь до файла с посылками") String filePath,
+            @ShellOption(help = "Путь до json файла для записи загруженных траков") String filePathDestination,
+            @ShellOption(help = "Метод загрузки (EFFECTIVE or BALANCED)") LoadingMode loadingMode,
+            @ShellOption(help = "Список размеров траков для загрузки, разделенных запятыми в формате ШИРИНАxВЫСОТА (пример: 6x6,4x3,5x5)") String truckSizes
     ) {
         TruckLoadingProcessSettings settings = new TruckLoadingProcessSettings(truckSizes.split(" "), loadingMode);
-
-        List<Truck> trucks = truckService.loadPackagesToTrucksFromFile(filePath, settings);
-        truckService.printAllTrucks(trucks);
-
+        List<Truck> loadedTrucks = truckService.loadPackagesToTrucksFromFile(filePath, settings);
+        truckService.printAllTrucks(loadedTrucks);
+        truckService.writeTrucksToJsonFile(loadedTrucks, filePathDestination);
 
     }
 
-    @ShellMethod("Unload all trucks and display the list of packages")
+    @ShellMethod("Метод разгрузки траков")
     public void unloadAllTrucks(
-            @ShellOption(help = "Path to the json file with trucks") String filePath
+            @ShellOption(help = "Пусть до JSON файла с траками") String filePath
     ) {
         List<Truck> trucks = truckService.unloadTrucksFromJsonFile(filePath);
         truckService.printAllTrucks(trucks);

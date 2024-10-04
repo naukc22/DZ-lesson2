@@ -1,15 +1,16 @@
 package ru.liga.packagesproject.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.dto.TruckBodyDto;
+import ru.liga.packagesproject.dto.TruckDto;
+import ru.liga.packagesproject.mapper.TruckMapper;
 import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.models.Truck;
 import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.services.IO.input.InputReader;
 import ru.liga.packagesproject.services.IO.input.PackageFileReader;
-import ru.liga.packagesproject.services.IO.input.TruckBodiesJsonReader;
+import ru.liga.packagesproject.services.IO.output.OutputWriter;
 import ru.liga.packagesproject.services.truckloading.truckloadingstrategies.LoadingStrategy;
 import ru.liga.packagesproject.services.truckloading.truckloadingstrategies.LoadingStrategyFactory;
 import ru.liga.packagesproject.services.truckunloading.TruckUnloader;
@@ -28,12 +29,13 @@ public class TruckService {
     private final PackageService packageService;
     private final TruckUnloader truckUnloader;
     private final InputReader<TruckBodyDto> truckBodiesJsonReader;
+    private final OutputWriter<TruckDto> truckJsonWriter;
 
-    @Autowired
-    public TruckService(PackageService packageService, TruckUnloader truckUnloader, TruckBodiesJsonReader truckBodiesJsonReader) {
+    public TruckService(PackageService packageService, TruckUnloader truckUnloader, InputReader<TruckBodyDto> truckBodiesJsonReader, OutputWriter<TruckDto> truckJsonWriter) {
         this.packageService = packageService;
         this.truckUnloader = truckUnloader;
         this.truckBodiesJsonReader = truckBodiesJsonReader;
+        this.truckJsonWriter = truckJsonWriter;
     }
 
     /**
@@ -115,6 +117,12 @@ public class TruckService {
         return trucks;
     }
 
+    public void writeTrucksToJsonFile(List<Truck> trucksForWriting, String filePathDestination) {
+        List<TruckDto> truckDtoList = trucksForWriting.stream().map(TruckMapper::toDTO).toList();
+
+        truckJsonWriter.write(truckDtoList, filePathDestination);
+    }
+
     /**
      * Выводит информацию о всех грузовиках на консоль.
      *
@@ -132,25 +140,5 @@ public class TruckService {
             truckNumber++;
         }
     }
-
-//    /**
-//     * Подсчитывает количество посылок в каждом грузовике из списка и выводит результат на консоль.
-//     *
-//     * @param trucks список грузовиков
-//     */
-//    public void countAndPrintPackagesFromTruckList(List<Truck> trucks) {
-//        for (int i = 0; i < trucks.size(); i++) {
-//            Truck truck = trucks.get(i);
-//            log.info("Обработка грузовика {}", (i + 1));
-//            System.out.println("Трак " + (i + 1) + ":");
-//            truck.printTruckToConsole();
-//
-//            Map<Character, Integer> packageCounts = PackageCounterService.countPackages(truck);
-//            log.debug("Результат подсчета посылок для грузовика {}: {}", (i + 1), packageCounts);
-//            System.out.println("Результат подсчета посылок:");
-//            PackageCounterService.printPackageCounts(packageCounts);
-//            System.out.println();
-//        }
-//    }
 
 }

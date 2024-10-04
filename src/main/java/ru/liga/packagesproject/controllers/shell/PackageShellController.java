@@ -20,9 +20,9 @@ public class PackageShellController {
 
     @ShellMethod("Добавить новую посылку")
     public void addPackage(
-            @ShellOption String name,
-            @ShellOption char symbol,
-            @ShellOption List<String> form
+            @ShellOption(help = "Имя посылки, используется для идентификации посылки") String name,
+            @ShellOption(help = "Символ, который будет использоваться для визуального представления посылки") char symbol,
+            @ShellOption(help = "Форма посылки в виде списка строк, каждая строка представляет один уровень посылки (пример : ****,*  *,****") List<String> form
     ) {
         packageService.addPackage(name, symbol, form);
         System.out.println("Посылка добавлена: " + name);
@@ -30,16 +30,16 @@ public class PackageShellController {
 
     @ShellMethod("Редактировать посылку")
     public void editPackage(
-            @ShellOption String name,
-            @ShellOption char newSymbol,
-            @ShellOption List<String> newForm
+            @ShellOption(help = "Имя посылки, которую необходимо редактировать") String name,
+            @ShellOption(help = "Новый символ для представления посылки") char newSymbol,
+            @ShellOption(help = "Новая форма посылки в виде списка строк") List<String> newForm
     ) {
         packageService.editPackage(name, newSymbol, newForm);
         System.out.println("Посылка обновлена: " + name);
     }
 
     @ShellMethod("Удалить посылку")
-    public void removePackage(@ShellOption String name) {
+    public void removePackage(@ShellOption(help = "Имя посылки, которую необходимо удалить") String name) {
         packageService.removePackage(name);
         System.out.println("Посылка удалена: " + name);
     }

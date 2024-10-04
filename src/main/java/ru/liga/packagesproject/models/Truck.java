@@ -97,6 +97,7 @@ public class Truck {
         log.info("Посылка загружена в {} на позицию ({}, {}). Текущая нагрузка: {}", this, i, j, getCurrentLoad());
     }
 
+
     public int getArea() {
         return width * height;
     }

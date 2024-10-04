@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.stereotype.Repository;
+import ru.liga.packagesproject.dto.PackageDto;
+import ru.liga.packagesproject.mapper.PackageMapper;
 import ru.liga.packagesproject.models.Package;
 
 import java.io.File;
@@ -37,10 +39,12 @@ public class PackageRepository {
         if (new File(STORAGE_FILE_PATH).exists()) {
 
             try (FileReader reader = new FileReader(STORAGE_FILE_PATH)) {
-                Type listType = new TypeToken<Map<String, Package>>() {
+                Type listType = new TypeToken<List<PackageDto>>() {
                 }.getType();
-                storage = new Gson().fromJson(reader, listType);
-
+                List<PackageDto> packageDtoList = new Gson().fromJson(reader, listType);
+                storage = packageDtoList.stream()
+                        .map(PackageMapper::toEntity)
+                        .collect(Collectors.toMap(Package::getName, p -> p));
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
@@ -56,9 +60,13 @@ public class PackageRepository {
      * Обновление базы данных (json файл). Вызывается каждый раз, при изменении мапы - packageStorage, которая держит базу данных в оперативной памяти.
      */
     private void uploadPackagesFromMapToFile() {
+        List<PackageDto> packageDtoList = packageStorage.values().stream()
+                .map(PackageMapper::toDto)
+                .collect(Collectors.toList());
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(STORAGE_FILE_PATH)) {
-            gson.toJson(packageStorage, writer);
+            gson.toJson(packageDtoList, writer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

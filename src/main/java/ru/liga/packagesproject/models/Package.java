@@ -24,10 +24,6 @@ public class Package {
         this.form = convertStringsToPackageForm(packageLines);
     }
 
-//    public Package(char[][] form) {
-//        this.form = form;
-//    }
-
     private static char[][] convertStringsToPackageForm(List<String> packageLines) {
         char[][] shape = new char[packageLines.size()][];
         for (int i = 0; i < packageLines.size(); i++) {

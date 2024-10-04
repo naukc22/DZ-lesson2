@@ -11,7 +11,7 @@ import java.util.List;
  * Посылки загружаются как можно плотнее, занимая наименьшее возможное количество грузовиков.
  */
 @Slf4j
-public class EffectiveLoadingStrategy implements LoadingStrategy {
+public class EffectiveLoadingStrategy extends LoadingStrategy {
 
     /**
      * Метод реализует стратегию эффективной загрузки посылок в грузовики.

@@ -21,19 +21,15 @@ public class TruckUnloader {
         this.packageService = packageService;
     }
 
+    /**
+     * Метод для разгрузки трака из json файла. Вызывает методы парсинга и подсчета посылок.
+     *
+     * @param truckBody тело трака
+     * @return трак, заполненный посылками.
+     */
     public Truck unloadTruck(TruckBodyDto truckBody) {
         Map<Character, Integer> symbolCounts = countSymbols(truckBody.getBody());
         Map<Package, Integer> packageCounts = parsePackagesInTruckBody(truckBody, symbolCounts);
-
-//        List<Package> packagesForLoading = new ArrayList<>();
-//
-//        for (Map.Entry<Package, Integer> entry : packageCounts.entrySet()) {
-//            Package pkg = entry.getKey();
-//            int count = entry.getValue();
-//            for (int i = 0; i < count; i++) {
-//                packagesForLoading.add(pkg);
-//            }
-//        }
 
         return new Truck(truckBody.getBody(), packageCounts);
     }
@@ -99,12 +95,10 @@ public class TruckUnloader {
                 char formCell = form[i][j];
                 char truckCell = truckBody[startRow + i][startCol + j];
 
-                // Если ячейка формы не пустая (' '), она должна совпадать с ячейкой грузовика
                 if (formCell != ' ' && formCell != truckCell) {
                     return false;
                 }
 
-                // Если ячейка формы пустая (' '), то можем игнорировать, что лежит в траке
             }
         }
 

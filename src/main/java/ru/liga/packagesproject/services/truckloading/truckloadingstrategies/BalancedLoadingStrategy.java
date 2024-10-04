@@ -13,7 +13,7 @@ import java.util.List;
  * Посылки распределяются по тракам с наименьшей текущей загрузкой.
  */
 @Slf4j
-public class BalancedLoadingStrategy implements LoadingStrategy {
+public class BalancedLoadingStrategy extends LoadingStrategy {
 
     /**
      * Метод реализует стратегию загрузки посылок в грузовики.
