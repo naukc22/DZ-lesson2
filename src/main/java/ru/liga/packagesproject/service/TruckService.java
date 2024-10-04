@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.services;
+package ru.liga.packagesproject.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -8,12 +8,12 @@ import ru.liga.packagesproject.mapper.TruckMapper;
 import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.models.Truck;
 import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
-import ru.liga.packagesproject.services.IO.input.InputReader;
-import ru.liga.packagesproject.services.IO.input.PackageFileReader;
-import ru.liga.packagesproject.services.IO.output.OutputWriter;
-import ru.liga.packagesproject.services.truckloading.truckloadingstrategies.LoadingStrategy;
-import ru.liga.packagesproject.services.truckloading.truckloadingstrategies.LoadingStrategyFactory;
-import ru.liga.packagesproject.services.truckunloading.TruckUnloader;
+import ru.liga.packagesproject.service.IO.input.InputReader;
+import ru.liga.packagesproject.service.IO.input.PackageFileReader;
+import ru.liga.packagesproject.service.IO.output.OutputWriter;
+import ru.liga.packagesproject.service.truckloading.truckloadingstrategies.LoadingStrategy;
+import ru.liga.packagesproject.service.truckloading.truckloadingstrategies.LoadingStrategyFactory;
+import ru.liga.packagesproject.service.truckunloading.TruckUnloader;
 
 import java.util.ArrayList;
 import java.util.List;

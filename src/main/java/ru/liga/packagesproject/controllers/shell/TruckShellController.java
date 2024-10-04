@@ -7,7 +7,7 @@ import org.springframework.shell.standard.ShellOption;
 import ru.liga.packagesproject.controllers.LoadingMode;
 import ru.liga.packagesproject.models.Truck;
 import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
-import ru.liga.packagesproject.services.TruckService;
+import ru.liga.packagesproject.service.TruckService;
 
 import java.util.List;
 

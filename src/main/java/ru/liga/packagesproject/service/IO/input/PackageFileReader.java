@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.services.IO.input;
+package ru.liga.packagesproject.service.IO.input;
 
 import lombok.extern.slf4j.Slf4j;
 

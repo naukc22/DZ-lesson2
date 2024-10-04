@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.services.truckloading.truckloadingstrategies;
+package ru.liga.packagesproject.service.truckloading.truckloadingstrategies;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.liga.packagesproject.controllers.LoadingMode;

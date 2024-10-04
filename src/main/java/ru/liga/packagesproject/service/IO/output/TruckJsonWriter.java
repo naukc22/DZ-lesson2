@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.services.IO.output;
+package ru.liga.packagesproject.service.IO.output;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

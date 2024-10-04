@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.services.IO.output;
+package ru.liga.packagesproject.service.IO.output;
 
 import java.util.List;
 

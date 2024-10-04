@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,9 +83,10 @@ public class PackageRepository {
     }
 
     public List<Package> findBySymbol(char symbol) {
-        return findAll().values().stream()
+        List<Package> result = findAll().values().stream()
                 .filter(pack -> pack.getSymbol() == symbol)
-                .collect(Collectors.toList());
+                .toList();
+        return result.isEmpty() ? Collections.emptyList() : result;
     }
 
     public void updatePackage(String name, Package updatedPackage) {
