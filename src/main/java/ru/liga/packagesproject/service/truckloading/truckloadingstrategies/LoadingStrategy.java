@@ -82,7 +82,7 @@ public abstract class LoadingStrategy {              // ВОПРОС Или лу
     }
 
     private boolean canBeLoad(int i, int j, Package pack, Truck truck) {
-        char[][] shape = pack.getForm();
+        char[][] shape = pack.getFormAsCharArray();
         int packHeight = pack.getHeight();
         int packWidth = pack.getWidth();
 

@@ -26,13 +26,13 @@ import java.util.Optional;
 @Service
 public class TruckService {
 
-    private final PackageService packageService;
+    private final DefaultPackageService defaultPackageService;
     private final TruckUnloader truckUnloader;
     private final InputReader<TruckBodyDto> truckBodiesJsonReader;
     private final OutputWriter<TruckDto> truckJsonWriter;
 
-    public TruckService(PackageService packageService, TruckUnloader truckUnloader, InputReader<TruckBodyDto> truckBodiesJsonReader, OutputWriter<TruckDto> truckJsonWriter) {
-        this.packageService = packageService;
+    public TruckService(DefaultPackageService defaultPackageService, TruckUnloader truckUnloader, InputReader<TruckBodyDto> truckBodiesJsonReader, OutputWriter<TruckDto> truckJsonWriter) {
+        this.defaultPackageService = defaultPackageService;
         this.truckUnloader = truckUnloader;
         this.truckBodiesJsonReader = truckBodiesJsonReader;
         this.truckJsonWriter = truckJsonWriter;
@@ -50,16 +50,16 @@ public class TruckService {
         List<Package> loadedPackages = new ArrayList<>();
 
         for (String packageName : packageNames) {
-            Package pack = packageService.getPackageByName(packageName);
-            if (pack != null) {
-                loadedPackages.add(pack);
+            Optional<Package> optionalPackage = defaultPackageService.findPackageByName(packageName);
+            if (optionalPackage.isPresent()) {
+                loadedPackages.add(optionalPackage.get());
             } else {
-                log.info("Package {} not found", packageName);
+                log.info("Посылка {} не найдена и будет пропущена.", packageName);
             }
         }
 
         if (loadedPackages.isEmpty()) {
-            log.info("No packages found");
+            log.info("Не нашлось подходящих посылок для работы");
             throw new RuntimeException();
         }
 
@@ -67,8 +67,8 @@ public class TruckService {
     }
 
     /**
-     * Принимает список из названий посылок. Вызывает ридер для считывания посылок из файла. Проверяет их наличие в базе.
-     * Все валидные посылки загружает в траки, размеры которых также передаются в виде TruckLoadingProcessSettings
+     * Принимает путь до файла с посылками. Вызывает ридер для считывания посылок из файла. Проверяет их наличие в базе.
+     * Все валидные посылки загружает в траки, размеры которых также приходят в виде TruckLoadingProcessSettings
      *
      * @param filePath список названий посылок для загрузки
      * @param settings параметры процесса загрузки траков
@@ -82,8 +82,12 @@ public class TruckService {
         List<Package> packagesToLoad = new ArrayList<>();
 
         for (List<String> packageStr : packagesStr) {
-            Optional<Package> packageByForm = packageService.getPackageByForm(packageStr);
-            packageByForm.ifPresent(packagesToLoad::add);
+            Optional<Package> optionalPackage = defaultPackageService.findPackageByForm(packageStr);
+            if (optionalPackage.isPresent()) {
+                packagesToLoad.add(optionalPackage.get());
+            } else {
+                log.info("Посылка {} не найдена и будет пропущена.", packageStr);
+            }
         }
 
         if (packagesToLoad.isEmpty()) {

@@ -1,10 +1,10 @@
-package ru.liga.packagesproject.controllers.shell;
+package ru.liga.packagesproject.controller.shell;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.liga.packagesproject.controllers.LoadingMode;
+import ru.liga.packagesproject.controller.LoadingMode;
 import ru.liga.packagesproject.models.Truck;
 import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.service.TruckService;

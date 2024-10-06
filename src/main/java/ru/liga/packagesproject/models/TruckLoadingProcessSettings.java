@@ -3,7 +3,7 @@ package ru.liga.packagesproject.models;
 import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import ru.liga.packagesproject.controllers.LoadingMode;
+import ru.liga.packagesproject.controller.LoadingMode;
 
 import java.util.ArrayList;
 import java.util.List;

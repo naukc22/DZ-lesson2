@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.controllers;
+package ru.liga.packagesproject.controller;
 
 public enum LoadingMode {
     EFFECTIVE, BALANCED

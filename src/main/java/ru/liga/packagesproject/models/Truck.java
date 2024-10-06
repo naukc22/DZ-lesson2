@@ -85,7 +85,7 @@ public class Truck {
      * @param pack посылка
      */
     public void loadPackage(int i, int j, Package pack) {
-        char[][] shape = pack.getForm();
+        char[][] shape = pack.getFormAsCharArray();
         int packHeight = pack.getHeight();
 
         for (int row = 0; row < packHeight; row++) {

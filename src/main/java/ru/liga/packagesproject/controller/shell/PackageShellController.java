@@ -1,21 +1,22 @@
-package ru.liga.packagesproject.controllers.shell;
+package ru.liga.packagesproject.controller.shell;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.liga.packagesproject.service.PackageService;
+import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
+import ru.liga.packagesproject.service.DefaultPackageService;
 
 import java.util.List;
 
 @ShellComponent
 public class PackageShellController {
 
-    private final PackageService packageService;
+    private final DefaultPackageService defaultPackageService;
 
     @Autowired
-    public PackageShellController(PackageService packageService) {
-        this.packageService = packageService;
+    public PackageShellController(DefaultPackageService defaultPackageService) {
+        this.defaultPackageService = defaultPackageService;
     }
 
     @ShellMethod("Добавить новую посылку")
@@ -24,7 +25,11 @@ public class PackageShellController {
             @ShellOption(help = "Символ, который будет использоваться для визуального представления посылки") char symbol,
             @ShellOption(help = "Форма посылки в виде списка строк, каждая строка представляет один уровень посылки (пример : ****,*  *,****") List<String> form
     ) {
-        packageService.addPackage(name, symbol, form);
+        try {
+            defaultPackageService.createPackage(name, symbol, form);
+        } catch (PackageAlreadyExistsException e) {
+            System.err.println(e.getMessage());
+        }
         System.out.println("Посылка добавлена: " + name);
     }
 
@@ -34,18 +39,18 @@ public class PackageShellController {
             @ShellOption(help = "Новый символ для представления посылки") char newSymbol,
             @ShellOption(help = "Новая форма посылки в виде списка строк") List<String> newForm
     ) {
-        packageService.editPackage(name, newSymbol, newForm);
+        defaultPackageService.updatePackage(name, newSymbol, newForm);
         System.out.println("Посылка обновлена: " + name);
     }
 
     @ShellMethod("Удалить посылку")
     public void removePackage(@ShellOption(help = "Имя посылки, которую необходимо удалить") String name) {
-        packageService.removePackage(name);
+        defaultPackageService.deletePackage(name);
         System.out.println("Посылка удалена: " + name);
     }
 
     @ShellMethod("Показать все посылки")
     public void listPackages() {
-        packageService.getAllPackagesList().forEach(System.out::println);
+        defaultPackageService.findAllPackages().forEach(System.out::println);
     }
 }

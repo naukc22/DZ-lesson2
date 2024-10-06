@@ -1,64 +1,85 @@
 package ru.liga.packagesproject.models;
 
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.liga.packagesproject.repository.StringListConverter;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Класс, представляющий посылку с её формой, названием, и символом из которого она состоит..
+ * Класс, представляющий посылку с её формой, названием и символом из которого она состоит.
  */
-
 @Getter
 @Setter
+@Entity
+@NoArgsConstructor
+@Table(schema = "loading", name = "packages")
 public class Package {
 
+    @Id
     private String name;
-    private char symbol;
-    private char[][] form;
 
-    public Package(String name, char symbol, List<String> packageLines) {
+    private char symbol;
+
+    @Convert(converter = StringListConverter.class)
+    private List<String> form;
+
+    public Package(String name, char symbol, List<String> form) {
         this.name = name;
         this.symbol = symbol;
-        this.form = convertStringsToPackageForm(packageLines);
+        this.form = form;
     }
 
-    private static char[][] convertStringsToPackageForm(List<String> packageLines) {
-        char[][] shape = new char[packageLines.size()][];
-        for (int i = 0; i < packageLines.size(); i++) {
-            String line = packageLines.get(i);
-            shape[i] = line.toCharArray();
+    public char[][] getFormAsCharArray() {
+        if (form == null) {
+            return new char[0][];
         }
-        return shape;
+
+        char[][] formCharArray = new char[form.size()][];
+        for (int i = 0; i < form.size(); i++) {
+            formCharArray[i] = form.get(i).toCharArray();
+        }
+        return formCharArray;
     }
+
+    public void setFormAsCharArray(char[][] formArray) {
+        this.form = convertCharArrayToList(formArray);
+    }
+
+    private List<String> convertCharArrayToList(char[][] formArray) {
+        return Arrays.stream(formArray)
+                .map(String::new)
+                .toList();
+    }
+
 
     public int getHeight() {
-        return form.length;
+        return getFormAsCharArray().length;
     }
 
     public int getWidth() {
-        return Arrays.stream(form)
+        return Arrays.stream(getFormAsCharArray())
                 .mapToInt(arr -> arr.length)
                 .max()
                 .orElse(0);
     }
 
     public int getBaseLength() {
-        return form[form.length - 1].length;
+        return getFormAsCharArray()[getFormAsCharArray().length - 1].length;
     }
 
     public int getArea() {
         int area = 0;
-
-        for (char[] row : form) {
+        for (char[] row : getFormAsCharArray()) {
             for (char cell : row) {
                 if (cell != ' ') {
                     area++;
                 }
             }
         }
-
         return area;
     }
 
@@ -68,10 +89,9 @@ public class Package {
         sb.append("Name: ").append(name).append("\n");
         sb.append("Symbol: ").append(symbol).append("\n");
         sb.append("Form:\n");
-        for (char[] line : form) {
+        for (char[] line : getFormAsCharArray()) {
             sb.append(line).append("\n");
         }
         return sb.toString();
     }
-
 }

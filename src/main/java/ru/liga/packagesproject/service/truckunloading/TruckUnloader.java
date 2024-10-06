@@ -5,20 +5,19 @@ import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.dto.TruckBodyDto;
 import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.models.Truck;
-import ru.liga.packagesproject.service.PackageService;
+import ru.liga.packagesproject.service.DefaultPackageService;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
 public class TruckUnloader {
 
-    private final PackageService packageService;
+    private final DefaultPackageService defaultPackageService;
 
     @Autowired
-    public TruckUnloader(PackageService packageService) {
-        this.packageService = packageService;
+    public TruckUnloader(DefaultPackageService defaultPackageService) {
+        this.defaultPackageService = defaultPackageService;
     }
 
     /**
@@ -40,13 +39,13 @@ public class TruckUnloader {
             char symbol = entry.getKey();
             int totalSymbols = entry.getValue();
 
-            List<Package> possiblePackages = packageService.getPackagesBySymbol(symbol);
+            Iterable<Package> possiblePackages = defaultPackageService.findPackagesBySymbol(symbol);
 
             for (Package pkg : possiblePackages) {
                 int packageArea = pkg.getArea();
                 int count = totalSymbols / packageArea;
 
-                if (count > 0 && matchesForm(truckBody.getBody(), pkg.getForm())) {
+                if (count > 0 && matchesForm(truckBody.getBody(), pkg.getFormAsCharArray())) {
                     parsedPackages.put(pkg, count);
                 }
             }
