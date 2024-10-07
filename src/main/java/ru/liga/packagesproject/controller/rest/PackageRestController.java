@@ -6,9 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.liga.packagesproject.dto.PackageDto;
 import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
+import ru.liga.packagesproject.exception.PackageNotFoundException;
 import ru.liga.packagesproject.mapper.PackageMapper;
 import ru.liga.packagesproject.models.Package;
-import ru.liga.packagesproject.service.DefaultPackageService;
+import ru.liga.packagesproject.service.impl.DefaultPackageService;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -35,18 +36,27 @@ public class PackageRestController {
     }
 
     @PutMapping("/{name}")
-    public String editPackage(
+    public ResponseEntity<String> updatePackage(
             @PathVariable String name,
             @RequestBody PackageDto packageDto
     ) {
-        defaultPackageService.updatePackage(name, packageDto.getSymbol(), packageDto.getForm());
-        return "Посылка обновлена: " + name;
+        try {
+            defaultPackageService.updatePackage(name, packageDto.getSymbol(), packageDto.getForm());
+            return ResponseEntity.ok("Посылка обновлена: " + name);
+        } catch (PackageNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
     }
 
     @DeleteMapping("/{name}")
-    public String removePackage(@PathVariable String name) {
-        defaultPackageService.deletePackage(name);
-        return "Посылка удалена: " + name;
+    public ResponseEntity<String> removePackage(@PathVariable String name) {
+        try {
+            defaultPackageService.removePackage(name);
+            return ResponseEntity.ok("Посылка удалена: " + name);
+        } catch (PackageNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping

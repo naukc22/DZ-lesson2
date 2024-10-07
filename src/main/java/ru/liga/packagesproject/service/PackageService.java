@@ -55,6 +55,6 @@ public interface PackageService {
      *
      * @param name имя посылки, которую нужно удалить
      */
-    void deletePackage(String name);
+    void removePackage(String name);
 }
 

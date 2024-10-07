@@ -5,7 +5,8 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
-import ru.liga.packagesproject.service.DefaultPackageService;
+import ru.liga.packagesproject.exception.PackageNotFoundException;
+import ru.liga.packagesproject.service.impl.DefaultPackageService;
 
 import java.util.List;
 
@@ -39,14 +40,23 @@ public class PackageShellController {
             @ShellOption(help = "Новый символ для представления посылки") char newSymbol,
             @ShellOption(help = "Новая форма посылки в виде списка строк") List<String> newForm
     ) {
-        defaultPackageService.updatePackage(name, newSymbol, newForm);
-        System.out.println("Посылка обновлена: " + name);
+        try {
+            defaultPackageService.updatePackage(name, newSymbol, newForm);
+            System.out.println("Посылка обновлена: " + name);
+        } catch (PackageNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     @ShellMethod("Удалить посылку")
     public void removePackage(@ShellOption(help = "Имя посылки, которую необходимо удалить") String name) {
-        defaultPackageService.deletePackage(name);
-        System.out.println("Посылка удалена: " + name);
+        try {
+            defaultPackageService.removePackage(name);
+            System.out.println("Посылка удалена: " + name);
+        } catch (PackageNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @ShellMethod("Показать все посылки")

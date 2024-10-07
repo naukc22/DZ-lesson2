@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.service;
+package ru.liga.packagesproject.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +8,7 @@ import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
 import ru.liga.packagesproject.exception.PackageNotFoundException;
 import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.repository.PackageRepository;
+import ru.liga.packagesproject.service.PackageService;
 
 import java.util.Collection;
 import java.util.List;
@@ -80,8 +81,9 @@ public class DefaultPackageService implements PackageService {
 
     @Override
     @Transactional
-    public void updatePackage(String name, char symbol, List<String> form) {
+    public void updatePackage(String name, char symbol, List<String> form) throws PackageNotFoundException {
         log.info("Обновление посылки с именем: {}", name);
+
         this.packageRepository.findByNameIgnoreCase(name)
                 .ifPresentOrElse(p -> {
                     p.setSymbol(symbol);
@@ -90,17 +92,17 @@ public class DefaultPackageService implements PackageService {
                 }, () -> {
                     throw new PackageNotFoundException(name);
                 });
+
     }
 
     @Override
-    public void deletePackage(String name) {
+    @Transactional
+    public void removePackage(String name) throws PackageNotFoundException {
         log.info("Удаление посылки с именем: {}", name);
-        try {
-            packageRepository.deleteById(name);
+        if (packageRepository.removeByNameIgnoreCase(name) > 0) {
             log.info("Посылка с именем {} успешно удалена", name);
-        } catch (Exception e) {
-            log.error("Ошибка при удалении посылки с именем: {}", name, e);
-            throw e;
+        } else {
+            throw new PackageNotFoundException(name);
         }
     }
 

@@ -12,5 +12,6 @@ public interface PackageRepository extends JpaRepository<Package, String> {
     Optional<Package> findByNameIgnoreCase(String name);
     Optional<Package> findByForm(List<String> name);
     Iterable<Package> findBySymbol(char name);
+    int removeByNameIgnoreCase(String name);
 
 }

@@ -1,148 +1,50 @@
 package ru.liga.packagesproject.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import ru.liga.packagesproject.dto.TruckBodyDto;
-import ru.liga.packagesproject.dto.TruckDto;
-import ru.liga.packagesproject.mapper.TruckMapper;
-import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.models.Truck;
 import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
-import ru.liga.packagesproject.service.IO.input.InputReader;
-import ru.liga.packagesproject.service.IO.input.PackageFileReader;
-import ru.liga.packagesproject.service.IO.output.OutputWriter;
-import ru.liga.packagesproject.service.truckloading.truckloadingstrategies.LoadingStrategy;
-import ru.liga.packagesproject.service.truckloading.truckloadingstrategies.LoadingStrategyFactory;
-import ru.liga.packagesproject.service.truckunloading.TruckUnloader;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-/**
- * Сервис для управления грузовиками - погрузка и разгрузка.
- */
-@Slf4j
-@Service
-public class TruckService {
-
-    private final DefaultPackageService defaultPackageService;
-    private final TruckUnloader truckUnloader;
-    private final InputReader<TruckBodyDto> truckBodiesJsonReader;
-    private final OutputWriter<TruckDto> truckJsonWriter;
-
-    public TruckService(DefaultPackageService defaultPackageService, TruckUnloader truckUnloader, InputReader<TruckBodyDto> truckBodiesJsonReader, OutputWriter<TruckDto> truckJsonWriter) {
-        this.defaultPackageService = defaultPackageService;
-        this.truckUnloader = truckUnloader;
-        this.truckBodiesJsonReader = truckBodiesJsonReader;
-        this.truckJsonWriter = truckJsonWriter;
-    }
+public interface TruckService {
 
     /**
-     * Принимает список из названий посылок. Проверяет их наличие в базе.
-     * Все валидные посылки загружает в траки, размеры которых также передаются в виде TruckLoadingProcessSettings
+     * Загружает посылки в грузовики на основе списка названий посылок.
      *
      * @param packageNames список названий посылок для загрузки
      * @param settings     параметры процесса загрузки траков
      * @return список загруженных грузовиков
      */
-    public List<Truck> loadPackagesToTrucksByNames(String[] packageNames, TruckLoadingProcessSettings settings) {
-        List<Package> loadedPackages = new ArrayList<>();
-
-        for (String packageName : packageNames) {
-            Optional<Package> optionalPackage = defaultPackageService.findPackageByName(packageName);
-            if (optionalPackage.isPresent()) {
-                loadedPackages.add(optionalPackage.get());
-            } else {
-                log.info("Посылка {} не найдена и будет пропущена.", packageName);
-            }
-        }
-
-        if (loadedPackages.isEmpty()) {
-            log.info("Не нашлось подходящих посылок для работы");
-            throw new RuntimeException();
-        }
-
-        return loadTrucks(loadedPackages, settings);
-    }
+    List<Truck> loadPackagesToTrucks(String[] packageNames, TruckLoadingProcessSettings settings);
 
     /**
-     * Принимает путь до файла с посылками. Вызывает ридер для считывания посылок из файла. Проверяет их наличие в базе.
-     * Все валидные посылки загружает в траки, размеры которых также приходят в виде TruckLoadingProcessSettings
+     * Загружает посылки в грузовики на основе данных из файла.
      *
-     * @param filePath список названий посылок для загрузки
+     * @param filePath путь до файла с посылками для загрузки
      * @param settings параметры процесса загрузки траков
      * @return список загруженных грузовиков
      */
-    public List<Truck> loadPackagesToTrucksFromFile(String filePath, TruckLoadingProcessSettings settings) {
-
-        PackageFileReader fileReader = new PackageFileReader();
-        List<List<String>> packagesStr = fileReader.read(filePath);
-
-        List<Package> packagesToLoad = new ArrayList<>();
-
-        for (List<String> packageStr : packagesStr) {
-            Optional<Package> optionalPackage = defaultPackageService.findPackageByForm(packageStr);
-            if (optionalPackage.isPresent()) {
-                packagesToLoad.add(optionalPackage.get());
-            } else {
-                log.info("Посылка {} не найдена и будет пропущена.", packageStr);
-            }
-        }
-
-        if (packagesToLoad.isEmpty()) {
-            throw new RuntimeException("Валидация завершилась неудачей. Все посылки недействительны.");
-        }
-
-        return loadTrucks(packagesToLoad, settings);
-    }
-
-    private List<Truck> loadTrucks(List<Package> packagesToLoad, TruckLoadingProcessSettings settings) {
-        log.info("Начинаем загрузку посылок. Режим загрузки: {}, Количество грузовиков: {}", settings.getLoadingMode(), settings.getTruckCount());
-        List<Truck> emptyTrucksForLoading = new ArrayList<>();
-
-        for (TruckLoadingProcessSettings.TruckSize truckSize : settings.getTruckSizes()) {
-            emptyTrucksForLoading.add(new Truck(truckSize.getWidth(), truckSize.getHeight()));
-        }
-
-        LoadingStrategy strategy = LoadingStrategyFactory.getStrategyFromLoadingMode(settings.getLoadingMode());
-        List<Truck> trucks = strategy.loadPackages(packagesToLoad, emptyTrucksForLoading);
-
-        log.info("Загрузка посылок завершена. Загружено грузовиков: {}", trucks.size());
-        return trucks;
-    }
-
-    public List<Truck> unloadTrucksFromJsonFile(String filePath) {
-        List<TruckBodyDto> truckBodies = truckBodiesJsonReader.read(filePath);
-        List<Truck> trucks = new ArrayList<>();
-        for (TruckBodyDto truckBody : truckBodies) {
-            trucks.add(truckUnloader.unloadTruck(truckBody));
-        }
-        return trucks;
-    }
-
-    public void writeTrucksToJsonFile(List<Truck> trucksForWriting, String filePathDestination) {
-        List<TruckDto> truckDtoList = trucksForWriting.stream().map(TruckMapper::toDTO).toList();
-
-        truckJsonWriter.write(truckDtoList, filePathDestination);
-    }
+    List<Truck> loadPackagesToTrucks(String filePath, TruckLoadingProcessSettings settings);
 
     /**
-     * Выводит информацию о всех грузовиках на консоль.
+     * Разгружает грузовики из файла JSON.
+     *
+     * @param filePath путь до JSON файла с информацией о грузовиках
+     * @return список разгруженных грузовиков
+     */
+    List<Truck> unloadTrucksFromJsonFile(String filePath);
+
+    /**
+     * Сохраняет информацию о грузовиках в файл JSON.
+     *
+     * @param trucksForWriting    список грузовиков для записи
+     * @param filePathDestination путь для сохранения JSON файла
+     */
+    void writeTrucksToJsonFile(List<Truck> trucksForWriting, String filePathDestination);
+
+    /**
+     * Печатает информацию о всех грузовиках на консоль.
      *
      * @param trucks список грузовиков
      */
-    public void printAllTrucks(List<Truck> trucks) {
-        int truckNumber = 1;
-        for (Truck truck : trucks) {
-            log.info("Печать информации о грузовике {}", truckNumber);
-            System.out.println("Тело");
-            truck.printTruckBodyToConsole();
-            System.out.println("Загруженные посылки: ");
-            truck.getLoadedPackages().forEach((key, value) -> System.out.println(key.getName() + " : " + value));
-
-            truckNumber++;
-        }
-    }
-
+    void printAllTrucks(List<Truck> trucks);
 }

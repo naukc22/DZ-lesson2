@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.dto.TruckBodyDto;
 import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.models.Truck;
-import ru.liga.packagesproject.service.DefaultPackageService;
+import ru.liga.packagesproject.service.impl.DefaultPackageService;
 
 import java.util.HashMap;
 import java.util.Map;

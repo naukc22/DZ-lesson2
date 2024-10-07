@@ -7,7 +7,7 @@ import ru.liga.packagesproject.models.Truck;
 import java.util.List;
 
 @Slf4j
-public abstract class LoadingStrategy {              // ВОПРОС Или лучше абстрактный класс вместо интерфейса?
+public abstract class LoadingStrategy {
 
     public abstract List<Truck> loadPackages(List<Package> packages, List<Truck> trucks);
 

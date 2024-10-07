@@ -7,18 +7,18 @@ import org.springframework.shell.standard.ShellOption;
 import ru.liga.packagesproject.controller.LoadingMode;
 import ru.liga.packagesproject.models.Truck;
 import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
-import ru.liga.packagesproject.service.TruckService;
+import ru.liga.packagesproject.service.impl.DefaultTruckService;
 
 import java.util.List;
 
 @ShellComponent
 public class TruckShellController {
 
-    private final TruckService truckService;
+    private final DefaultTruckService defaultTruckService;
 
     @Autowired
-    public TruckShellController(TruckService truckService) {
-        this.truckService = truckService;
+    public TruckShellController(DefaultTruckService defaultTruckService) {
+        this.defaultTruckService = defaultTruckService;
     }
 
     @ShellMethod("Метод загрузки траков посылками по списку имен")
@@ -31,9 +31,9 @@ public class TruckShellController {
         String[] packageNamesArray = packageNames.split(",");
         var loadingSettings = new TruckLoadingProcessSettings(truckSizes.split(","), loadingMode);
 
-        List<Truck> loadedTrucks = truckService.loadPackagesToTrucksByNames(packageNamesArray, loadingSettings);
-        truckService.printAllTrucks(loadedTrucks);
-        truckService.writeTrucksToJsonFile(loadedTrucks, filePathDestination);
+        List<Truck> loadedTrucks = defaultTruckService.loadPackagesToTrucks(packageNamesArray, loadingSettings);
+        defaultTruckService.printAllTrucks(loadedTrucks);
+        defaultTruckService.writeTrucksToJsonFile(loadedTrucks, filePathDestination);
     }
 
     @ShellMethod("Метод загрузки траков посылками из файла")
@@ -44,9 +44,9 @@ public class TruckShellController {
             @ShellOption(help = "Список размеров траков для загрузки, разделенных запятыми в формате ШИРИНАxВЫСОТА (пример: 6x6,4x3,5x5)") String truckSizes
     ) {
         TruckLoadingProcessSettings settings = new TruckLoadingProcessSettings(truckSizes.split(" "), loadingMode);
-        List<Truck> loadedTrucks = truckService.loadPackagesToTrucksFromFile(filePath, settings);
-        truckService.printAllTrucks(loadedTrucks);
-        truckService.writeTrucksToJsonFile(loadedTrucks, filePathDestination);
+        List<Truck> loadedTrucks = defaultTruckService.loadPackagesToTrucks(filePath, settings);
+        defaultTruckService.printAllTrucks(loadedTrucks);
+        defaultTruckService.writeTrucksToJsonFile(loadedTrucks, filePathDestination);
 
     }
 
@@ -54,7 +54,7 @@ public class TruckShellController {
     public void unloadAllTrucks(
             @ShellOption(help = "Пусть до JSON файла с траками") String filePath
     ) {
-        List<Truck> trucks = truckService.unloadTrucksFromJsonFile(filePath);
-        truckService.printAllTrucks(trucks);
+        List<Truck> trucks = defaultTruckService.unloadTrucksFromJsonFile(filePath);
+        defaultTruckService.printAllTrucks(trucks);
     }
 }
