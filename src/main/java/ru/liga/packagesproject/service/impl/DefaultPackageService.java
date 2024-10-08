@@ -13,6 +13,7 @@ import ru.liga.packagesproject.service.PackageService;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 @Slf4j
@@ -47,25 +48,30 @@ public class DefaultPackageService implements PackageService {
     @Override
     public Optional<Package> findPackageByForm(List<String> packageForm) {
         log.info("Поиск посылки по форме: {}", packageForm);
-        Optional<Package> foundPackage = packageRepository.findByForm(packageForm);
-        if (foundPackage.isEmpty()) {
+        Iterable<Package> allPackages = findAllPackages();
+
+        Optional<Package> resultPackage = StreamSupport.stream(allPackages.spliterator(), false)
+                .filter(pkg -> pkg.getForm().equals(packageForm))
+                .findFirst();
+
+        if (resultPackage.isEmpty()) {
             log.warn("Посылка с формой {} не найдена", packageForm);
         } else {
-            log.info("Посылка найдена: {}", foundPackage.get());
+            log.info("Посылка найдена: {}", packageForm);
         }
-        return foundPackage;
+        return resultPackage;
     }
 
 
     public Iterable<Package> findPackagesBySymbol(char symbol) {
         log.info("Поиск посылки по символу: {}", symbol);
 
-        Iterable<Package> foundedPackage = packageRepository.findBySymbol(symbol);
+        Iterable<Package> foundPackage = packageRepository.findBySymbol(symbol);
 
-        if (!foundedPackage.iterator().hasNext()) {
+        if (!foundPackage.iterator().hasNext()) {
             log.warn("Посылок с символом  ' {} ' не найдена", symbol);
         }
-        return foundedPackage;
+        return foundPackage;
     }
 
     @Override

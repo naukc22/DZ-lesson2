@@ -1,7 +1,10 @@
-package ru.liga.packagesproject.controller.telegram.command;
+package ru.liga.packagesproject.controller.telegram.command.commandImpl.packagecommand;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import ru.liga.packagesproject.controller.telegram.command.BotCommand;
+import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
+import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
 import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.service.impl.DefaultPackageService;
 
@@ -19,17 +22,17 @@ public class ListPackagesCommand implements BotCommand {
     }
 
     @Override
-    public String execute(String[] args) {
+    public TelegramBotCommandResponse execute(TelegramBotCommandRequest request) {
         Iterable<Package> packages = packageService.findAllPackages();
         if (!packages.iterator().hasNext()) {
-            return "Нет доступных пакетов.";
+            return new TelegramBotCommandResponse("Нет доступных пакетов.");
         }
 
         List<String> packagesStr = StreamSupport.stream(packages.spliterator(), false)
                 .map(Package::getName)
                 .toList();
 
-        return "Доступные посылки:\n" + String.join("\n", packagesStr);
+        return new TelegramBotCommandResponse("Доступные посылки:\n" + String.join("\n", packagesStr));
     }
 }
 

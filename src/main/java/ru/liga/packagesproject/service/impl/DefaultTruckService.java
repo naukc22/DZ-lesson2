@@ -9,7 +9,7 @@ import ru.liga.packagesproject.models.Package;
 import ru.liga.packagesproject.models.Truck;
 import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.service.IO.input.InputReader;
-import ru.liga.packagesproject.service.IO.input.PackageFileReader;
+import ru.liga.packagesproject.service.IO.input.impl.PackageFileReader;
 import ru.liga.packagesproject.service.IO.output.OutputWriter;
 import ru.liga.packagesproject.service.TruckService;
 import ru.liga.packagesproject.service.truckloading.truckloadingstrategies.LoadingStrategy;
@@ -83,9 +83,9 @@ public class DefaultTruckService implements TruckService {
         List<Package> packagesToLoad = new ArrayList<>();
 
         for (List<String> packageStr : packagesStr) {
-            Optional<Package> optionalPackage = defaultPackageService.findPackageByForm(packageStr);
-            if (optionalPackage.isPresent()) {
-                packagesToLoad.add(optionalPackage.get());
+            Optional<Package> foundPackage = defaultPackageService.findPackageByForm(packageStr);
+            if (foundPackage.isPresent()) {
+                packagesToLoad.add(foundPackage.get());
             } else {
                 log.info("Посылка {} не найдена и будет пропущена.", packageStr);
             }
@@ -113,6 +113,14 @@ public class DefaultTruckService implements TruckService {
         return trucks;
     }
 
+    /**
+     * Метод разгрузки посылок из трака. Принимает на вход пусть до JSON файла в траками.
+     * Сканирует их. Возвращает список из объектов Truck с загруженными в них посылками,
+     * в такой же последовательности как они были в передаваемом файле
+     *
+     * @param filePath путь до JSON файла с информацией о грузовиках
+     * @return список траков с загруженными посылками.
+     */
     public List<Truck> unloadTrucksFromJsonFile(String filePath) {
         List<TruckBodyDto> truckBodies = truckBodiesJsonReader.read(filePath);
         List<Truck> trucks = new ArrayList<>();

@@ -1,10 +1,13 @@
 package ru.liga.packagesproject.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.liga.packagesproject.repository.StringListConverter;
+import ru.liga.packagesproject.util.StringListConverter;
 
 import java.util.Arrays;
 import java.util.List;

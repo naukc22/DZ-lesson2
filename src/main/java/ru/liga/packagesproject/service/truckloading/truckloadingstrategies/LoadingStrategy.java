@@ -9,6 +9,13 @@ import java.util.List;
 @Slf4j
 public abstract class LoadingStrategy {
 
+    /**
+     * Основный метод загрузки траков. Каждая стратегия реализует по-своему, в зависимости от типа загрузки.
+     *
+     * @param packages список посылок для погрузки
+     * @param trucks   список пустых траков для загрузки
+     * @return список уже загруженных траков
+     */
     public abstract List<Truck> loadPackages(List<Package> packages, List<Truck> trucks);
 
     /**
@@ -32,7 +39,7 @@ public abstract class LoadingStrategy {
     }
 
     /**
-     * Сортируем посылки в порядке убывания площади, чтобы максимальные посылки были первыми.
+     * Сортируем посылки в порядке убывания площади.
      *
      * @param packages список посылок
      */
@@ -40,6 +47,11 @@ public abstract class LoadingStrategy {
         packages.sort((p1, p2) -> Integer.compare(p2.getArea(), p1.getArea()));
     }
 
+    /**
+     * Сортируем траки в порядке убывания площади.
+     *
+     * @param trucks список траков
+     */
     void sortTrucksByAreaInDescendingOrder(List<Truck> trucks) {
         trucks.sort((p1, p2) -> Integer.compare(p2.getArea(), p1.getArea()));
     }

@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.service.IO.input;
+package ru.liga.packagesproject.service.IO.input.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.dto.TruckBodyDto;
 import ru.liga.packagesproject.models.Truck;
+import ru.liga.packagesproject.service.IO.input.InputReader;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

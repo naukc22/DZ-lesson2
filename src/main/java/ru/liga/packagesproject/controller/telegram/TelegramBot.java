@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
+import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
+import ru.liga.packagesproject.util.TelegramBotUtils;
+
+import java.io.File;
 
 @Slf4j
 @Getter
@@ -19,6 +22,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String botUsername;
     private final String botToken;
     private final CommandHandler commandHandler;
+
 
     public TelegramBot(
             @Value("${telegram.bot.name}") String botUsername,
@@ -39,25 +43,31 @@ public class TelegramBot extends TelegramLongPollingBot {
      */
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            Message message = update.getMessage();
-            String chatId = message.getChatId().toString();
-            String[] input = message.getText().split(" ", 2);
-            String command = input[0];
-            String[] args = input.length > 1 ? input[1].split(" ") : new String[0];
+        System.out.println("Получено обновление");
+        if (update.hasMessage()) {
 
-            String responseText = commandHandler.handleCommand(command, args);
+            TelegramBotCommandRequest telegramBotCommandRequest = prepareRequest(update);
 
-            SendMessage response = new SendMessage();
-            response.setChatId(chatId);
-            response.setText(responseText);
+            TelegramBotCommandResponse response = commandHandler.handleCommand(telegramBotCommandRequest, update);
 
-            try {
-                execute(response);
-            } catch (TelegramApiException e) {
-                log.error(e.getMessage());
+            String chatId = update.getMessage().getChatId().toString();
+            TelegramBotUtils.sendMessage(this, chatId, response.getMessage());
+
+            if (response.hasFile()) {
+                TelegramBotUtils.sendFile(this, chatId, response.getFile(), "Результат");
+                response.getFile().delete();
             }
         }
     }
 
+    private TelegramBotCommandRequest prepareRequest(Update update) {
+        String[] commandArgs = TelegramBotUtils.getCommandArgumentsFromUpdate(update);
+
+        if (update.getMessage().hasDocument()) {
+            File file = TelegramBotUtils.downloadFileFromTelegram(this, update);
+            return new TelegramBotCommandRequest(commandArgs, file);
+        } else {
+            return new TelegramBotCommandRequest(commandArgs);
+        }
+    }
 }

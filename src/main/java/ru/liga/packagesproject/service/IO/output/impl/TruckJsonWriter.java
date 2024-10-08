@@ -1,10 +1,11 @@
-package ru.liga.packagesproject.service.IO.output;
+package ru.liga.packagesproject.service.IO.output.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.dto.TruckDto;
+import ru.liga.packagesproject.service.IO.output.OutputWriter;
 
 import java.io.FileWriter;
 import java.io.IOException;

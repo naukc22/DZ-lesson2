@@ -1,6 +1,7 @@
-package ru.liga.packagesproject.service.IO.input;
+package ru.liga.packagesproject.service.IO.input.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.liga.packagesproject.service.IO.input.InputReader;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

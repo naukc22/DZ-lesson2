@@ -1,7 +1,7 @@
 package ru.liga.packagesproject.service.truckloading.truckloadingstrategies;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.liga.packagesproject.controller.LoadingMode;
+import ru.liga.packagesproject.enums.LoadingMode;
 
 /**
  * Factory class для создания объектов {@link LoadingStrategy} на основе режима загрузки {@link LoadingMode}.
