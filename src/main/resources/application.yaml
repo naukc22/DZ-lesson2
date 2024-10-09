@@ -3,14 +3,14 @@ spring:
     interactive:
       enabled: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/packages_db
-    username: postgres
-    password : postgres
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
 telegram:
   bot:
-    name: parcels_liga_bot
-    token: 7908149853:AAGupw1SDbF_vOwu1d3iHr16nlawHLTeuRU
+    name: ${TELEGRAM_BOT_NAME}
+    token: ${TELEGRAM_BOT_TOKEN}

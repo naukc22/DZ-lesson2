@@ -1,33 +1,39 @@
-version: '3.8'
-
+version: "3.9"
 services:
-  postgres-db:
+  postgres:
     image: postgres:16
-    container_name: postgres-db
+    container_name: postgres_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: packages_db
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - spring_net
 
   spring-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: spring-app
+    container_name: spring_app
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/packages_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_JPA_HIBERNATE_DDL_AUTO: false
-    depends_on:
-      - postgres-db
+      DB_URL: jdbc:postgresql://postgres_db:5432/${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      TELEGRAM_BOT_NAME: ${TELEGRAM_BOT_NAME}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
     ports:
       - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - spring_net
 
 volumes:
-  db_data:
+  postgres_data:
 
+networks:
+  spring_net:

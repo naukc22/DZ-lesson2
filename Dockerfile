@@ -1,17 +1,14 @@
-FROM maven:3.9.0-eclipse-temurin-17 AS builder
+# Используем официальный образ OpenJDK 17 для запуска Java-приложений
+FROM openjdk:17-jdk-slim
+
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем все файлы проекта и устанавливаем зависимости
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Копируем файл jar в контейнер
+COPY build/libs/your-app-name.jar app.jar
 
-COPY src ./src
-RUN mvn package -DskipTests
-
-# Финальная сборка для запуска
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=builder /app/target/*.jar app.jar
-
+# Экспонируем порт 8080 (порт вашего приложения)
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Запуск приложения
+CMD ["java", "-jar", "app.jar"]
