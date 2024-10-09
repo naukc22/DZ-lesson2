@@ -8,7 +8,7 @@ import ru.liga.packagesproject.dto.PackageDto;
 import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
 import ru.liga.packagesproject.exception.PackageNotFoundException;
 import ru.liga.packagesproject.mapper.PackageMapper;
-import ru.liga.packagesproject.models.Package;
+import ru.liga.packagesproject.model.Package;
 import ru.liga.packagesproject.service.impl.DefaultPackageService;
 
 import java.util.List;

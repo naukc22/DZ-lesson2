@@ -3,8 +3,8 @@ package ru.liga.packagesproject.service.truckunloading.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.dto.TruckBodyDto;
-import ru.liga.packagesproject.models.Package;
-import ru.liga.packagesproject.models.Truck;
+import ru.liga.packagesproject.model.Package;
+import ru.liga.packagesproject.model.Truck;
 import ru.liga.packagesproject.service.impl.DefaultPackageService;
 import ru.liga.packagesproject.service.truckunloading.TruckUnloader;
 

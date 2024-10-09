@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
 import ru.liga.packagesproject.exception.PackageNotFoundException;
-import ru.liga.packagesproject.models.Package;
+import ru.liga.packagesproject.model.Package;
 import ru.liga.packagesproject.repository.PackageRepository;
 import ru.liga.packagesproject.service.PackageService;
 

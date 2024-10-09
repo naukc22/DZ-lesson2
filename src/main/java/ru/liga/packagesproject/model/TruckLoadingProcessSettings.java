@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.models;
+package ru.liga.packagesproject.model;
 
 import lombok.Data;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package ru.liga.packagesproject.service;
 
-import ru.liga.packagesproject.models.Truck;
-import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
+import ru.liga.packagesproject.model.Truck;
+import ru.liga.packagesproject.model.TruckLoadingProcessSettings;
 
 import java.util.List;
 

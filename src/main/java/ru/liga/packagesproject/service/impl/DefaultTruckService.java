@@ -4,10 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.dto.TruckBodyDto;
 import ru.liga.packagesproject.dto.TruckDto;
+import ru.liga.packagesproject.exception.AllPackageNamesAreNotValid;
+import ru.liga.packagesproject.exception.AllPackagesAreNotValid;
 import ru.liga.packagesproject.mapper.TruckMapper;
-import ru.liga.packagesproject.models.Package;
-import ru.liga.packagesproject.models.Truck;
-import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
+import ru.liga.packagesproject.model.Package;
+import ru.liga.packagesproject.model.Truck;
+import ru.liga.packagesproject.model.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.service.IO.input.InputReader;
 import ru.liga.packagesproject.service.IO.input.impl.PackageFileReader;
 import ru.liga.packagesproject.service.IO.output.OutputWriter;
@@ -61,7 +63,7 @@ public class DefaultTruckService implements TruckService {
 
         if (loadedPackages.isEmpty()) {
             log.info("Не нашлось подходящих посылок для работы");
-            throw new RuntimeException();
+            throw new AllPackageNamesAreNotValid(packageNames);
         }
 
         return executeLoading(loadedPackages, settings);
@@ -92,7 +94,8 @@ public class DefaultTruckService implements TruckService {
         }
 
         if (packagesToLoad.isEmpty()) {
-            throw new RuntimeException("Валидация завершилась неудачей. Все посылки недействительны.");
+            log.info("Не нашлось подходящих посылок для работы");
+            throw new AllPackagesAreNotValid(packagesStr);
         }
 
         return executeLoading(packagesToLoad, settings);
@@ -130,6 +133,12 @@ public class DefaultTruckService implements TruckService {
         return trucks;
     }
 
+    /**
+     * Метод конвертирует Траки в ДТО и вызывает сервис для записи объектов в JSON файл
+     *
+     * @param trucksForWriting    список грузовиков для записи
+     * @param filePathDestination путь для сохранения JSON файла
+     */
     public void writeTrucksToJsonFile(List<Truck> trucksForWriting, String filePathDestination) {
         List<TruckDto> truckDtoList = trucksForWriting.stream().map(TruckMapper::toDTO).toList();
 

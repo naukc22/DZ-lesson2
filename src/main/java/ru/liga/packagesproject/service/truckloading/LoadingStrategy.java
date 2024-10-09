@@ -1,8 +1,8 @@
 package ru.liga.packagesproject.service.truckloading;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.liga.packagesproject.models.Package;
-import ru.liga.packagesproject.models.Truck;
+import ru.liga.packagesproject.model.Package;
+import ru.liga.packagesproject.model.Truck;
 
 import java.util.List;
 

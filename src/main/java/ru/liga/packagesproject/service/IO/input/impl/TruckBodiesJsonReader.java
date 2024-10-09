@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.dto.TruckBodyDto;
-import ru.liga.packagesproject.models.Truck;
+import ru.liga.packagesproject.model.Truck;
 import ru.liga.packagesproject.service.IO.input.InputReader;
 
 import java.io.FileNotFoundException;

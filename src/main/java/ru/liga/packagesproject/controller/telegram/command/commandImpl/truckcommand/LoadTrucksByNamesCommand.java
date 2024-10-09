@@ -6,8 +6,8 @@ import ru.liga.packagesproject.controller.telegram.command.BotCommand;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
 import ru.liga.packagesproject.enums.LoadingMode;
-import ru.liga.packagesproject.models.Truck;
-import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
+import ru.liga.packagesproject.model.Truck;
+import ru.liga.packagesproject.model.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.service.impl.DefaultTruckService;
 import ru.liga.packagesproject.util.FileUtils;
 

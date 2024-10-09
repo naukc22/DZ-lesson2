@@ -1,7 +1,7 @@
 package ru.liga.packagesproject.service.truckunloading;
 
 import ru.liga.packagesproject.dto.TruckBodyDto;
-import ru.liga.packagesproject.models.Truck;
+import ru.liga.packagesproject.model.Truck;
 
 /**
  * Класс для разгрузки траков.

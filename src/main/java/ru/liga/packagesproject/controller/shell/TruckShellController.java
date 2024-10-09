@@ -5,8 +5,8 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.liga.packagesproject.enums.LoadingMode;
-import ru.liga.packagesproject.models.Truck;
-import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
+import ru.liga.packagesproject.model.Truck;
+import ru.liga.packagesproject.model.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.service.impl.DefaultTruckService;
 
 import java.util.List;

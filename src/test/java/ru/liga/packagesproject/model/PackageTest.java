@@ -1,7 +1,6 @@
 package ru.liga.packagesproject.model;
 
 import org.junit.jupiter.api.Test;
-import ru.liga.packagesproject.models.Package;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.models;
+package ru.liga.packagesproject.model;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

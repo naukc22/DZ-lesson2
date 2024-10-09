@@ -2,8 +2,6 @@ package ru.liga.packagesproject.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.liga.packagesproject.models.Package;
-import ru.liga.packagesproject.models.Truck;
 
 import java.util.HashMap;
 import java.util.List;

@@ -2,7 +2,7 @@ package ru.liga.packagesproject.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.liga.packagesproject.models.Package;
+import ru.liga.packagesproject.model.Package;
 
 import java.util.Optional;
 

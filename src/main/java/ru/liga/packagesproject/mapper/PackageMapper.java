@@ -2,7 +2,7 @@ package ru.liga.packagesproject.mapper;
 
 import org.springframework.stereotype.Service;
 import ru.liga.packagesproject.dto.PackageDto;
-import ru.liga.packagesproject.models.Package;
+import ru.liga.packagesproject.model.Package;
 
 import java.util.Arrays;
 import java.util.List;

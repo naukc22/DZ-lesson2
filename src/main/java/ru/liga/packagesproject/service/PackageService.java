@@ -1,7 +1,7 @@
 package ru.liga.packagesproject.service;
 
 import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
-import ru.liga.packagesproject.models.Package;
+import ru.liga.packagesproject.model.Package;
 
 import java.util.List;
 import java.util.Optional;

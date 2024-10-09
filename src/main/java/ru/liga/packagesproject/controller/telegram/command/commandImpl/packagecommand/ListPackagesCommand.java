@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import ru.liga.packagesproject.controller.telegram.command.BotCommand;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
-import ru.liga.packagesproject.models.Package;
+import ru.liga.packagesproject.model.Package;
 import ru.liga.packagesproject.service.impl.DefaultPackageService;
 
 import java.util.List;

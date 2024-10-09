@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.liga.packagesproject.dto.ResponseMessage;
 import ru.liga.packagesproject.enums.LoadingMode;
-import ru.liga.packagesproject.models.Truck;
-import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
+import ru.liga.packagesproject.model.Truck;
+import ru.liga.packagesproject.model.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.service.impl.DefaultTruckService;
 
 import java.util.List;

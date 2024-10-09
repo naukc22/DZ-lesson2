@@ -2,8 +2,9 @@ package ru.liga.packagesproject.service.truckloading;
 
 
 import lombok.extern.slf4j.Slf4j;
-import ru.liga.packagesproject.models.Package;
-import ru.liga.packagesproject.models.Truck;
+import ru.liga.packagesproject.exception.PackagesDidNotFitInTrucksException;
+import ru.liga.packagesproject.model.Package;
+import ru.liga.packagesproject.model.Truck;
 
 import java.util.Comparator;
 import java.util.List;
@@ -42,7 +43,7 @@ public class BalancedLoadingStrategy extends LoadingStrategy {
             }
 
             if (!isPackageLoaded) {
-                throw new RuntimeException("Ошибка: Посылка '" + currentPackage.getName() + "' не поместилась в доступные грузовики.");
+                throw new PackagesDidNotFitInTrucksException(List.of(currentPackage.getName()));
             }
         }
 

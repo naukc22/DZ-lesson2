@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.models;
+package ru.liga.packagesproject.model;
 
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;

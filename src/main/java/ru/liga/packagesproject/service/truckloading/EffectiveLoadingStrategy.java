@@ -1,8 +1,9 @@
 package ru.liga.packagesproject.service.truckloading;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.liga.packagesproject.models.Package;
-import ru.liga.packagesproject.models.Truck;
+import ru.liga.packagesproject.exception.PackagesDidNotFitInTrucksException;
+import ru.liga.packagesproject.model.Package;
+import ru.liga.packagesproject.model.Truck;
 
 import java.util.List;
 
@@ -50,7 +51,11 @@ public class EffectiveLoadingStrategy extends LoadingStrategy {
 
         if (!packages.isEmpty()) {
             log.error("Ошибка: Посылки не поместились во все доступные грузовики. Список не поместившихся посылок: {}", packages);
-            throw new RuntimeException();
+            throw new PackagesDidNotFitInTrucksException(
+                    packages.stream()
+                            .map(String::valueOf)
+                            .toList()
+            );
         }
 
         return trucks;
