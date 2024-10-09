@@ -14,6 +14,9 @@ import ru.liga.packagesproject.util.TelegramBotUtils;
 
 import java.io.File;
 
+/**
+ * Основной класс телеграм бота
+ */
 @Slf4j
 @Getter
 @Component

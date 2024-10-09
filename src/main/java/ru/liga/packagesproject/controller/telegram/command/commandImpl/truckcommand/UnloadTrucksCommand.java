@@ -13,6 +13,9 @@ import ru.liga.packagesproject.util.FileUtils;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Класс команда которая выполняет разгрузку траков. Обращается к TruckService для выполнения методами unloadTrucksFromJsonFile
+ */
 @Controller
 public class UnloadTrucksCommand implements BotCommand {
 

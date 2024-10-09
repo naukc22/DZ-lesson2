@@ -42,7 +42,13 @@ public class CommandHandler {
         commands.put("/unload_trucks", unloadTrucksCommand);
     }
 
-
+    /**
+     * Метод вызывает команду, в зависимости от переданного TelegramBotCommandRequest
+     *
+     * @param request класс представляющий данные для запроса
+     * @param update  класс update из Telegram API
+     * @return TelegramBotCommandResponse
+     */
     public TelegramBotCommandResponse handleCommand(TelegramBotCommandRequest request, Update update) {
 
         String command = TelegramBotUtils.getCommandFromUpdate(update);

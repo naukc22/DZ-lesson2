@@ -9,12 +9,15 @@ import ru.liga.packagesproject.enums.LoadingMode;
 import ru.liga.packagesproject.models.Truck;
 import ru.liga.packagesproject.models.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.service.impl.DefaultTruckService;
-import ru.liga.packagesproject.util.TelegramBotUtils;
 import ru.liga.packagesproject.util.FileUtils;
 
 import java.io.File;
 import java.util.List;
 
+/**
+ * Команда телеграм бота для загрузки посылок по именам в траки. Создает временный файл на сервере.
+ * Возвращает json файл с загруженными траками. После отправки файл с сервера удаляется.
+ */
 @Controller
 public class LoadTrucksByNamesCommand implements BotCommand {
 

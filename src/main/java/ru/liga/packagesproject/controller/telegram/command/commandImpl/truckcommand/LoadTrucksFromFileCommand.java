@@ -14,6 +14,13 @@ import ru.liga.packagesproject.util.FileUtils;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Команда телеграм бота для загрузки посылок из TXT файла в траки.
+ * Скаченный файл содержится в TelegramBotCommandRequest.
+ * После парсинга файл удаляется.
+ * Для результата создает временный файл на сервере.
+ * Возвращает json файл с загруженными траками. После отправки файл с сервера удаляется.
+ */
 @Controller
 public class LoadTrucksFromFileCommand implements BotCommand {
 

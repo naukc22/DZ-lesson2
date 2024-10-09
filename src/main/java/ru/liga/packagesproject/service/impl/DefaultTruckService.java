@@ -12,9 +12,9 @@ import ru.liga.packagesproject.service.IO.input.InputReader;
 import ru.liga.packagesproject.service.IO.input.impl.PackageFileReader;
 import ru.liga.packagesproject.service.IO.output.OutputWriter;
 import ru.liga.packagesproject.service.TruckService;
-import ru.liga.packagesproject.service.truckloading.truckloadingstrategies.LoadingStrategy;
-import ru.liga.packagesproject.service.truckloading.truckloadingstrategies.LoadingStrategyFactory;
-import ru.liga.packagesproject.service.truckunloading.TruckUnloader;
+import ru.liga.packagesproject.service.truckloading.LoadingStrategy;
+import ru.liga.packagesproject.service.truckloading.LoadingStrategyFactory;
+import ru.liga.packagesproject.service.truckunloading.impl.DefaultTruckUnloader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +28,13 @@ import java.util.Optional;
 public class DefaultTruckService implements TruckService {
 
     private final DefaultPackageService defaultPackageService;
-    private final TruckUnloader truckUnloader;
+    private final DefaultTruckUnloader defaultTruckUnloader;
     private final InputReader<TruckBodyDto> truckBodiesJsonReader;
     private final OutputWriter<TruckDto> truckJsonWriter;
 
-    public DefaultTruckService(DefaultPackageService defaultPackageService, TruckUnloader truckUnloader, InputReader<TruckBodyDto> truckBodiesJsonReader, OutputWriter<TruckDto> truckJsonWriter) {
+    public DefaultTruckService(DefaultPackageService defaultPackageService, DefaultTruckUnloader defaultTruckUnloader, InputReader<TruckBodyDto> truckBodiesJsonReader, OutputWriter<TruckDto> truckJsonWriter) {
         this.defaultPackageService = defaultPackageService;
-        this.truckUnloader = truckUnloader;
+        this.defaultTruckUnloader = defaultTruckUnloader;
         this.truckBodiesJsonReader = truckBodiesJsonReader;
         this.truckJsonWriter = truckJsonWriter;
     }
@@ -125,7 +125,7 @@ public class DefaultTruckService implements TruckService {
         List<TruckBodyDto> truckBodies = truckBodiesJsonReader.read(filePath);
         List<Truck> trucks = new ArrayList<>();
         for (TruckBodyDto truckBody : truckBodies) {
-            trucks.add(truckUnloader.unloadTruck(truckBody));
+            trucks.add(defaultTruckUnloader.unloadTruck(truckBody));
         }
         return trucks;
     }

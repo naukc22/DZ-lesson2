@@ -13,8 +13,7 @@ import ru.liga.packagesproject.service.IO.input.InputReader;
 import ru.liga.packagesproject.service.IO.output.OutputWriter;
 import ru.liga.packagesproject.service.impl.DefaultPackageService;
 import ru.liga.packagesproject.service.impl.DefaultTruckService;
-import ru.liga.packagesproject.service.truckloading.truckloadingstrategies.LoadingStrategy;
-import ru.liga.packagesproject.service.truckunloading.TruckUnloader;
+import ru.liga.packagesproject.service.truckunloading.impl.DefaultTruckUnloader;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,7 @@ public class DefaultTruckServiceTest {
     private DefaultPackageService defaultPackageService;
 
     @Mock
-    private TruckUnloader truckUnloader;
+    private DefaultTruckUnloader defaultTruckUnloader;
 
     @Mock
     private InputReader<TruckBodyDto> truckBodiesJsonReader;
@@ -62,13 +61,13 @@ public class DefaultTruckServiceTest {
         TruckBodyDto truckBodyDto = new TruckBodyDto(new char[2][2]);
         Truck truck = new Truck(2, 2);
         when(truckBodiesJsonReader.read(anyString())).thenReturn(List.of(truckBodyDto));
-        when(truckUnloader.unloadTruck(any(TruckBodyDto.class))).thenReturn(truck);
+        when(defaultTruckUnloader.unloadTruck(any(TruckBodyDto.class))).thenReturn(truck);
 
         List<Truck> trucks = defaultTruckService.unloadTrucksFromJsonFile("filePath");
 
         assertThat(trucks).containsExactly(truck);
         verify(truckBodiesJsonReader, times(1)).read("filePath");
-        verify(truckUnloader, times(1)).unloadTruck(truckBodyDto);
+        verify(defaultTruckUnloader, times(1)).unloadTruck(truckBodyDto);
     }
 
     @Test
