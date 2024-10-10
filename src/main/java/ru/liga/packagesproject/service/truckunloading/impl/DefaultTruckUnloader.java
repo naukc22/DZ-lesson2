@@ -2,10 +2,10 @@ package ru.liga.packagesproject.service.truckunloading.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.liga.packagesproject.dto.Truck;
 import ru.liga.packagesproject.dto.TruckBodyDto;
 import ru.liga.packagesproject.model.Package;
-import ru.liga.packagesproject.model.Truck;
-import ru.liga.packagesproject.service.impl.DefaultPackageService;
+import ru.liga.packagesproject.service.impl.PackageServiceImpl;
 import ru.liga.packagesproject.service.truckunloading.TruckUnloader;
 
 import java.util.HashMap;
@@ -14,11 +14,11 @@ import java.util.Map;
 @Service
 public class DefaultTruckUnloader implements TruckUnloader {
 
-    private final DefaultPackageService defaultPackageService;
+    private final PackageServiceImpl packageServiceImpl;
 
     @Autowired
-    public DefaultTruckUnloader(DefaultPackageService defaultPackageService) {
-        this.defaultPackageService = defaultPackageService;
+    public DefaultTruckUnloader(PackageServiceImpl packageServiceImpl) {
+        this.packageServiceImpl = packageServiceImpl;
     }
 
     /**
@@ -40,7 +40,7 @@ public class DefaultTruckUnloader implements TruckUnloader {
             char symbol = entry.getKey();
             int totalSymbols = entry.getValue();
 
-            Iterable<Package> possiblePackages = defaultPackageService.findPackagesBySymbol(symbol);
+            Iterable<Package> possiblePackages = packageServiceImpl.findBySymbol(symbol);
 
             for (Package pkg : possiblePackages) {
                 int packageArea = pkg.getArea();

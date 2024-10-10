@@ -7,12 +7,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.liga.packagesproject.dto.TruckBodyDto;
 import ru.liga.packagesproject.dto.TruckDto;
-import ru.liga.packagesproject.model.Truck;
-import ru.liga.packagesproject.model.TruckLoadingProcessSettings;
+import ru.liga.packagesproject.dto.Truck;
+import ru.liga.packagesproject.dto.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.service.IO.input.InputReader;
 import ru.liga.packagesproject.service.IO.output.OutputWriter;
-import ru.liga.packagesproject.service.impl.DefaultPackageService;
-import ru.liga.packagesproject.service.impl.DefaultTruckService;
+import ru.liga.packagesproject.service.impl.PackageServiceImpl;
+import ru.liga.packagesproject.service.impl.TruckServiceImpl;
 import ru.liga.packagesproject.service.truckunloading.impl.DefaultTruckUnloader;
 
 import java.util.List;
@@ -22,10 +22,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-public class DefaultTruckServiceTest {
+public class TruckServiceImplTest {
 
     @Mock
-    private DefaultPackageService defaultPackageService;
+    private PackageServiceImpl packageServiceImpl;
 
     @Mock
     private DefaultTruckUnloader defaultTruckUnloader;
@@ -37,7 +37,7 @@ public class DefaultTruckServiceTest {
     private OutputWriter<TruckDto> truckJsonWriter;
 
     @InjectMocks
-    private DefaultTruckService defaultTruckService;
+    private TruckServiceImpl truckServiceImpl;
 
     @BeforeEach
     public void setUp() {
@@ -48,12 +48,12 @@ public class DefaultTruckServiceTest {
     @Test
     public void testLoadPackagesToTrucks_PackageNames_NoValidPackages() {
         TruckLoadingProcessSettings settings = mock(TruckLoadingProcessSettings.class);
-        when(defaultPackageService.findPackageByName(anyString())).thenReturn(Optional.empty());
+        when(packageServiceImpl.findByName(anyString())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> defaultTruckService.loadPackagesToTrucks(new String[]{"InvalidPackage"}, settings))
+        assertThatThrownBy(() -> truckServiceImpl.loadPackagesToTrucks(new String[]{"InvalidPackage"}, settings))
                 .isInstanceOf(RuntimeException.class);
 
-        verify(defaultPackageService, times(1)).findPackageByName("InvalidPackage");
+        verify(packageServiceImpl, times(1)).findByName("InvalidPackage");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class DefaultTruckServiceTest {
         when(truckBodiesJsonReader.read(anyString())).thenReturn(List.of(truckBodyDto));
         when(defaultTruckUnloader.unloadTruck(any(TruckBodyDto.class))).thenReturn(truck);
 
-        List<Truck> trucks = defaultTruckService.unloadTrucksFromJsonFile("filePath");
+        List<Truck> trucks = truckServiceImpl.unloadTrucksFromJsonFile("filePath");
 
         assertThat(trucks).containsExactly(truck);
         verify(truckBodiesJsonReader, times(1)).read("filePath");
@@ -75,7 +75,7 @@ public class DefaultTruckServiceTest {
         List<Truck> trucks = List.of(new Truck(2, 2));
         doNothing().when(truckJsonWriter).write(anyList(), anyString());
 
-        defaultTruckService.writeTrucksToJsonFile(trucks, "filePathDestination");
+        truckServiceImpl.writeTrucksToJsonFile(trucks, "filePathDestination");
 
         verify(truckJsonWriter, times(1)).write(anyList(), eq("filePathDestination"));
     }

@@ -6,18 +6,18 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
 import ru.liga.packagesproject.exception.PackageNotFoundException;
-import ru.liga.packagesproject.service.impl.DefaultPackageService;
+import ru.liga.packagesproject.service.impl.PackageServiceImpl;
 
 import java.util.List;
 
 @ShellComponent
 public class PackageShellController {
 
-    private final DefaultPackageService defaultPackageService;
+    private final PackageServiceImpl packageServiceImpl;
 
     @Autowired
-    public PackageShellController(DefaultPackageService defaultPackageService) {
-        this.defaultPackageService = defaultPackageService;
+    public PackageShellController(PackageServiceImpl packageServiceImpl) {
+        this.packageServiceImpl = packageServiceImpl;
     }
 
     @ShellMethod("Добавить новую посылку")
@@ -27,7 +27,7 @@ public class PackageShellController {
             @ShellOption(help = "Форма посылки в виде списка строк, каждая строка представляет один уровень посылки (пример : ****,*  *,****") List<String> form
     ) {
         try {
-            defaultPackageService.createPackage(name, symbol, form);
+            packageServiceImpl.create(name, symbol, form);
         } catch (PackageAlreadyExistsException e) {
             System.err.println(e.getMessage());
         }
@@ -41,7 +41,7 @@ public class PackageShellController {
             @ShellOption(help = "Новая форма посылки в виде списка строк") List<String> newForm
     ) {
         try {
-            defaultPackageService.updatePackage(name, newSymbol, newForm);
+            packageServiceImpl.update(name, newSymbol, newForm);
             System.out.println("Посылка обновлена: " + name);
         } catch (PackageNotFoundException e) {
             System.out.println(e.getMessage());
@@ -52,7 +52,7 @@ public class PackageShellController {
     @ShellMethod("Удалить посылку")
     public void removePackage(@ShellOption(help = "Имя посылки, которую необходимо удалить") String name) {
         try {
-            defaultPackageService.removePackage(name);
+            packageServiceImpl.remove(name);
             System.out.println("Посылка удалена: " + name);
         } catch (PackageNotFoundException e) {
             System.out.println(e.getMessage());
@@ -61,6 +61,6 @@ public class PackageShellController {
 
     @ShellMethod("Показать все посылки")
     public void listPackages() {
-        defaultPackageService.findAllPackages().forEach(System.out::println);
+        packageServiceImpl.findAll().forEach(System.out::println);
     }
 }

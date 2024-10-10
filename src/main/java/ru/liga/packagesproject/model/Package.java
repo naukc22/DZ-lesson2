@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.liga.packagesproject.util.StringListConverter;
+import ru.liga.packagesproject.service.util.StringListConverter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(schema = "loading", name = "packages")
+@Table(schema = "loading", name = "package")
 public class Package {
 
     @Id

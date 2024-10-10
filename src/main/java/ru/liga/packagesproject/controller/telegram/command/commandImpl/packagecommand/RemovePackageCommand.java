@@ -5,16 +5,15 @@ import org.springframework.stereotype.Controller;
 import ru.liga.packagesproject.controller.telegram.command.BotCommand;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
-import ru.liga.packagesproject.service.impl.DefaultPackageService;
-import ru.liga.packagesproject.util.TelegramBotUtils;
+import ru.liga.packagesproject.service.impl.PackageServiceImpl;
 
 @Controller
 public class RemovePackageCommand implements BotCommand {
 
-    private final DefaultPackageService packageService;
+    private final PackageServiceImpl packageService;
 
     @Autowired
-    public RemovePackageCommand(DefaultPackageService packageService) {
+    public RemovePackageCommand(PackageServiceImpl packageService) {
         this.packageService = packageService;
     }
 
@@ -27,7 +26,7 @@ public class RemovePackageCommand implements BotCommand {
         String name = commandArgs[0];
 
         try {
-            packageService.removePackage(name);
+            packageService.remove(name);
             return new TelegramBotCommandResponse("Посылка успешно удалена: " + name);
         } catch (Exception e) {
             return new TelegramBotCommandResponse("Ошибка при удалении посылки: " + e.getMessage());

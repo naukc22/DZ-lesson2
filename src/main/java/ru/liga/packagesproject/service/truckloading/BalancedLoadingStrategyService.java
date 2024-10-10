@@ -2,9 +2,9 @@ package ru.liga.packagesproject.service.truckloading;
 
 
 import lombok.extern.slf4j.Slf4j;
+import ru.liga.packagesproject.dto.Truck;
 import ru.liga.packagesproject.exception.PackagesDidNotFitInTrucksException;
 import ru.liga.packagesproject.model.Package;
-import ru.liga.packagesproject.model.Truck;
 
 import java.util.Comparator;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * Посылки распределяются по тракам с наименьшей текущей загрузкой.
  */
 @Slf4j
-public class BalancedLoadingStrategy extends LoadingStrategy {
+public class BalancedLoadingStrategyService extends LoadingStrategyService {
 
     /**
      * Метод реализует стратегию загрузки посылок в грузовики.
@@ -36,7 +36,7 @@ public class BalancedLoadingStrategy extends LoadingStrategy {
             sortTruckByCurrentLoad(trucks);
 
             for (Truck truck : trucks) {
-                if (findSpaceForLoadingPackageIntoTruckAndTryToLoad(truck, currentPackage)) {
+                if (findSpaceAndTryLoad(truck, currentPackage)) {
                     isPackageLoaded = true;
                     break;
                 }

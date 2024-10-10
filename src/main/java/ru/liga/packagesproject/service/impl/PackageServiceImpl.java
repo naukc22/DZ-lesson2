@@ -4,8 +4,10 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.liga.packagesproject.dto.PackageDto;
 import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
 import ru.liga.packagesproject.exception.PackageNotFoundException;
+import ru.liga.packagesproject.mapper.PackageMapper;
 import ru.liga.packagesproject.model.Package;
 import ru.liga.packagesproject.repository.PackageRepository;
 import ru.liga.packagesproject.service.PackageService;
@@ -17,53 +19,51 @@ import java.util.stream.StreamSupport;
 
 @Service
 @Slf4j
-public class DefaultPackageService implements PackageService {
+public class PackageServiceImpl implements PackageService {
 
     private final PackageRepository packageRepository;
 
     @Autowired
-    public DefaultPackageService(PackageRepository packageRepository) {
+    public PackageServiceImpl(PackageRepository packageRepository) {
         this.packageRepository = packageRepository;
     }
 
     @Override
-    public Iterable<Package> findAllPackages() {
+    public List<PackageDto> findAll() {
         Iterable<Package> packages = packageRepository.findAll();
         log.info("Получено посылок: {}", ((Collection<?>) packages).size());
-        return packages;
+        return StreamSupport.stream(packages.spliterator(), false)
+                .map(PackageMapper::toDto)
+                .toList();
     }
 
     @Override
-    public Optional<Package> findPackageByName(String packageName) {
+    public Optional<Package> findByName(String packageName) {
         log.info("Поиск посылки по имени: {}", packageName);
         Optional<Package> foundPackage = packageRepository.findByNameIgnoreCase(packageName);
         if (foundPackage.isEmpty()) {
-            log.warn("Посылка с именем {} не найдена", packageName);
-        } else {
-            log.info("Посылка найдена: {}", foundPackage.get());
+            log.error("Посылка с именем {} не найдена", packageName);
         }
         return foundPackage;
     }
 
     @Override
-    public Optional<Package> findPackageByForm(List<String> packageForm) {
+    public Optional<Package> findByForm(List<String> packageForm) {
         log.info("Поиск посылки по форме: {}", packageForm);
-        Iterable<Package> allPackages = findAllPackages();
+        List<PackageDto> allPackages = findAll();
 
-        Optional<Package> resultPackage = StreamSupport.stream(allPackages.spliterator(), false)
+        Optional<PackageDto> resultPackageDto = allPackages.stream()
                 .filter(pkg -> pkg.getForm().equals(packageForm))
                 .findFirst();
 
-        if (resultPackage.isEmpty()) {
-            log.warn("Посылка с формой {} не найдена", packageForm);
-        } else {
-            log.info("Посылка найдена: {}", packageForm);
+        if (resultPackageDto.isEmpty()) {
+            log.error("Посылка с формой {} не найдена", packageForm);
         }
-        return resultPackage;
+        return resultPackageDto.map(this::convertToPackage);
     }
 
-
-    public Iterable<Package> findPackagesBySymbol(char symbol) {
+    @Override
+    public Iterable<Package> findBySymbol(char symbol) {
         log.info("Поиск посылки по символу: {}", symbol);
 
         Iterable<Package> foundPackage = packageRepository.findBySymbol(symbol);
@@ -75,10 +75,10 @@ public class DefaultPackageService implements PackageService {
     }
 
     @Override
-    public Package createPackage(String name, char symbol, List<String> form) throws PackageAlreadyExistsException {
+    public Package create(String name, char symbol, List<String> form) throws PackageAlreadyExistsException {
         log.info("Создание новой посылки с именем: {}", name);
         if (packageRepository.findByNameIgnoreCase(name).isPresent()) {
-            log.warn("Посылка с именем '{}' уже существует", name);
+            log.error("Посылка с именем '{}' уже существует", name);
             throw new PackageAlreadyExistsException(name);
         }
         Package createdPackage = new Package(name, symbol, form);
@@ -87,15 +87,16 @@ public class DefaultPackageService implements PackageService {
 
     @Override
     @Transactional
-    public void updatePackage(String name, char symbol, List<String> form) throws PackageNotFoundException {
+    public void update(String name, char symbol, List<String> form) throws PackageNotFoundException {
         log.info("Обновление посылки с именем: {}", name);
 
-        this.packageRepository.findByNameIgnoreCase(name)
+        packageRepository.findByNameIgnoreCase(name)
                 .ifPresentOrElse(p -> {
                     p.setSymbol(symbol);
                     p.setFormAsCharArray(convertFormStrToCharArray(form));
                     log.info("Посылка успешно обновлена: {}", p);
                 }, () -> {
+                    log.error("Посылку с именем '{}' не удалось обновить, потому что она не существует", name);
                     throw new PackageNotFoundException(name);
                 });
 
@@ -103,11 +104,12 @@ public class DefaultPackageService implements PackageService {
 
     @Override
     @Transactional
-    public void removePackage(String name) throws PackageNotFoundException {
+    public void remove(String name) throws PackageNotFoundException {
         log.info("Удаление посылки с именем: {}", name);
         if (packageRepository.removeByNameIgnoreCase(name) > 0) {
             log.info("Посылка с именем {} успешно удалена", name);
         } else {
+            log.error("Посылку с именем '{}' не удалось удалить, потому что она не существует", name);
             throw new PackageNotFoundException(name);
         }
     }
@@ -117,6 +119,14 @@ public class DefaultPackageService implements PackageService {
         return formStr.stream()
                 .map(String::toCharArray)
                 .toArray(char[][]::new);
+    }
+
+    private Package convertToPackage(PackageDto packageDto) {
+        return new Package(
+                packageDto.getName(),
+                packageDto.getSymbol(),
+                packageDto.getForm()
+        );
     }
 }
 

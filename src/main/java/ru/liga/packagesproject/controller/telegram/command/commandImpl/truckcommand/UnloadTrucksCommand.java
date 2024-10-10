@@ -4,11 +4,11 @@ package ru.liga.packagesproject.controller.telegram.command.commandImpl.truckcom
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.liga.packagesproject.controller.telegram.command.BotCommand;
+import ru.liga.packagesproject.dto.Truck;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
-import ru.liga.packagesproject.model.Truck;
-import ru.liga.packagesproject.service.impl.DefaultTruckService;
-import ru.liga.packagesproject.util.FileUtils;
+import ru.liga.packagesproject.service.impl.TruckServiceImpl;
+import ru.liga.packagesproject.service.util.FileUtils;
 
 import java.io.File;
 import java.util.List;
@@ -19,11 +19,11 @@ import java.util.List;
 @Controller
 public class UnloadTrucksCommand implements BotCommand {
 
-    private final DefaultTruckService defaultTruckService;
+    private final TruckServiceImpl truckServiceImpl;
 
     @Autowired
-    public UnloadTrucksCommand(DefaultTruckService defaultTruckService) {
-        this.defaultTruckService = defaultTruckService;
+    public UnloadTrucksCommand(TruckServiceImpl truckServiceImpl) {
+        this.truckServiceImpl = truckServiceImpl;
     }
 
     @Override
@@ -35,11 +35,11 @@ public class UnloadTrucksCommand implements BotCommand {
 
         if (request.hasFile()) {
 
-            List<Truck> unloadTrucks = defaultTruckService.unloadTrucksFromJsonFile(request.getFile().getPath());
+            List<Truck> unloadTrucks = truckServiceImpl.unloadTrucksFromJsonFile(request.getFile().getPath());
             request.getFile().delete();
 
             File tempFileWithLoadedTrucks = FileUtils.generateTempFileForLoadingTrucks();
-            defaultTruckService.writeTrucksToJsonFile(unloadTrucks, tempFileWithLoadedTrucks.getPath());
+            truckServiceImpl.writeTrucksToJsonFile(unloadTrucks, tempFileWithLoadedTrucks.getPath());
 
             return new TelegramBotCommandResponse("Траки успешно разгружены.", tempFileWithLoadedTrucks);
 

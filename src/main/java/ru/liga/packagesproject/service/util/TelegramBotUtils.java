@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.util;
+package ru.liga.packagesproject.service.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,8 +28,8 @@ public class TelegramBotUtils {
      * Отправляет текстовое сообщение в указанный чат.
      *
      * @param telegramBot экземпляр TelegramBot для отправки сообщения
-     * @param chatId     идентификатор чата, куда будет отправлено сообщение
-     * @param text       текст сообщения
+     * @param chatId      идентификатор чата, куда будет отправлено сообщение
+     * @param text        текст сообщения
      */
     public static void sendMessage(TelegramBot telegramBot, String chatId, String text) {
         SendMessage message = new SendMessage();
@@ -47,9 +47,9 @@ public class TelegramBotUtils {
      * Отправляет файл в указанный чат с подписью.
      *
      * @param telegramBot экземпляр TelegramBot для отправки файла
-     * @param chatId     идентификатор чата, куда будет отправлен файл
-     * @param file       файл для отправки
-     * @param caption    подпись к файлу
+     * @param chatId      идентификатор чата, куда будет отправлен файл
+     * @param file        файл для отправки
+     * @param caption     подпись к файлу
      */
     public static void sendFile(TelegramBot telegramBot, String chatId, File file, String caption) {
         SendDocument sendDocumentRequest = new SendDocument();

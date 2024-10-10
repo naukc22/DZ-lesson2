@@ -1,13 +1,13 @@
 package ru.liga.packagesproject.service.truckloading;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.liga.packagesproject.dto.Truck;
 import ru.liga.packagesproject.model.Package;
-import ru.liga.packagesproject.model.Truck;
 
 import java.util.List;
 
 @Slf4j
-public abstract class LoadingStrategy {
+public abstract class LoadingStrategyService {
 
     /**
      * Основный метод загрузки траков. Каждая стратегия реализует по-своему, в зависимости от типа загрузки.
@@ -25,7 +25,7 @@ public abstract class LoadingStrategy {
      * @param pack  посылка, которую нужно загрузить
      * @return true, если посылка успешно загружена, иначе false
      */
-    boolean findSpaceForLoadingPackageIntoTruckAndTryToLoad(Truck truck, Package pack) {
+    boolean findSpaceAndTryLoad(Truck truck, Package pack) {
         for (int row = truck.getHeight() - 1; row >= 0; row--) {
             for (int column = 0; column < truck.getWidth(); column++) {
                 if (!truck.isCellOccupied(row, column)) {

@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
-import ru.liga.packagesproject.util.TelegramBotUtils;
+import ru.liga.packagesproject.service.util.TelegramBotUtils;
 
 import java.io.File;
 

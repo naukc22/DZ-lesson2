@@ -3,13 +3,13 @@ package ru.liga.packagesproject.controller.telegram.command.commandImpl.truckcom
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.liga.packagesproject.controller.telegram.command.BotCommand;
+import ru.liga.packagesproject.dto.Truck;
+import ru.liga.packagesproject.dto.TruckLoadingProcessSettings;
+import ru.liga.packagesproject.dto.enums.LoadingMode;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
-import ru.liga.packagesproject.enums.LoadingMode;
-import ru.liga.packagesproject.model.Truck;
-import ru.liga.packagesproject.model.TruckLoadingProcessSettings;
-import ru.liga.packagesproject.service.impl.DefaultTruckService;
-import ru.liga.packagesproject.util.FileUtils;
+import ru.liga.packagesproject.service.impl.TruckServiceImpl;
+import ru.liga.packagesproject.service.util.FileUtils;
 
 import java.io.File;
 import java.util.List;
@@ -24,11 +24,11 @@ import java.util.List;
 @Controller
 public class LoadTrucksFromFileCommand implements BotCommand {
 
-    private final DefaultTruckService defaultTruckService;
+    private final TruckServiceImpl truckServiceImpl;
 
     @Autowired
-    public LoadTrucksFromFileCommand(DefaultTruckService defaultTruckService) {
-        this.defaultTruckService = defaultTruckService;
+    public LoadTrucksFromFileCommand(TruckServiceImpl truckServiceImpl) {
+        this.truckServiceImpl = truckServiceImpl;
     }
 
 
@@ -45,11 +45,11 @@ public class LoadTrucksFromFileCommand implements BotCommand {
             String[] truckSizes = commandArgs[1].split(",");
 
             TruckLoadingProcessSettings settings = new TruckLoadingProcessSettings(truckSizes, loadingMode);
-            List<Truck> loadedTrucks = defaultTruckService.loadPackagesToTrucks(request.getFile().getPath(), settings);
+            List<Truck> loadedTrucks = truckServiceImpl.loadPackagesToTrucks(request.getFile().getPath(), settings);
             request.getFile().delete();
 
             File tempFile = FileUtils.generateTempFileForLoadingTrucks();
-            defaultTruckService.writeTrucksToJsonFile(loadedTrucks, tempFile.getPath());
+            truckServiceImpl.writeTrucksToJsonFile(loadedTrucks, tempFile.getPath());
 
             return new TelegramBotCommandResponse("Траки успешно загружены.", tempFile);
 

@@ -1,7 +1,8 @@
-package ru.liga.packagesproject.model;
+package ru.liga.packagesproject.dto;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import ru.liga.packagesproject.model.Package;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ public class Truck {
     private final int height;
     private final int width;
     private char[][] body;
-    private final Map<Package, Integer> loadedPackages;
+    private final Map<ru.liga.packagesproject.model.Package, Integer> loadedPackages;
 
     public Truck(int height, int width) {
         this.height = height;
@@ -21,7 +22,7 @@ public class Truck {
         this.loadedPackages = new HashMap<>();
     }
 
-    public Truck(char[][] body, Map<Package, Integer> loadedPackages) {
+    public Truck(char[][] body, Map<ru.liga.packagesproject.model.Package, Integer> loadedPackages) {
         this.body = body;
         this.width = body[0].length;
         this.height = body.length;

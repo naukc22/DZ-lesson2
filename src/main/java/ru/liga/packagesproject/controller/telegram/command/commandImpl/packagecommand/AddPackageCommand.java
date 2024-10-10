@@ -6,18 +6,17 @@ import ru.liga.packagesproject.controller.telegram.command.BotCommand;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
 import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
-import ru.liga.packagesproject.service.impl.DefaultPackageService;
-import ru.liga.packagesproject.util.TelegramBotUtils;
+import ru.liga.packagesproject.service.impl.PackageServiceImpl;
 
 import java.util.List;
 
 @Service
 public class AddPackageCommand implements BotCommand {
 
-    private final DefaultPackageService packageService;
+    private final PackageServiceImpl packageService;
 
     @Autowired
-    public AddPackageCommand(DefaultPackageService packageService) {
+    public AddPackageCommand(PackageServiceImpl packageService) {
         this.packageService = packageService;
     }
 
@@ -32,7 +31,7 @@ public class AddPackageCommand implements BotCommand {
         List<String> form = List.of(commandArgs[2].split(","));
 
         try {
-            packageService.createPackage(name, symbol, form);
+            packageService.create(name, symbol, form);
             return new TelegramBotCommandResponse("Посылка успешно добавлена: " + name);
         } catch (PackageAlreadyExistsException e) {
             return new TelegramBotCommandResponse(e.getMessage());

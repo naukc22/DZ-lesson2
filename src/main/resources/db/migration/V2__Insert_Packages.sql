@@ -1,4 +1,4 @@
-INSERT INTO loading.packages (name, symbol, form)
+INSERT INTO loading.package (name, symbol, form)
 VALUES ('Шкаф', '8', '8888;8888;8888'),
        ('Холодильник', '4', '44;44'),
        ('Байдарка', '7', '7  ;777'),

@@ -1,9 +1,9 @@
 package ru.liga.packagesproject.service.truckloading;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.liga.packagesproject.dto.Truck;
 import ru.liga.packagesproject.exception.PackagesDidNotFitInTrucksException;
 import ru.liga.packagesproject.model.Package;
-import ru.liga.packagesproject.model.Truck;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * Посылки загружаются как можно плотнее, занимая наименьшее возможное количество грузовиков.
  */
 @Slf4j
-public class EffectiveLoadingStrategy extends LoadingStrategy {
+public class EffectiveLoadingStrategyService extends LoadingStrategyService {
 
     /**
      * Метод реализует стратегию эффективной загрузки посылок в грузовики.
@@ -36,7 +36,7 @@ public class EffectiveLoadingStrategy extends LoadingStrategy {
 
             for (int i = 0; i < packages.size(); ) {
                 Package currentPackage = packages.get(i);
-                boolean isLoaded = findSpaceForLoadingPackageIntoTruckAndTryToLoad(currentTruck, currentPackage);
+                boolean isLoaded = findSpaceAndTryLoad(currentTruck, currentPackage);
 
                 if (isLoaded) {
                     log.debug("Посылка '{}' загружена в грузовик {}.", currentPackage.getName(), currentTruckIndex + 1);

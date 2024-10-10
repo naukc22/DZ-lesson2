@@ -2,20 +2,20 @@ package ru.liga.packagesproject.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.liga.packagesproject.dto.Truck;
 import ru.liga.packagesproject.dto.TruckBodyDto;
 import ru.liga.packagesproject.dto.TruckDto;
+import ru.liga.packagesproject.dto.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.exception.AllPackageNamesAreNotValid;
 import ru.liga.packagesproject.exception.AllPackagesAreNotValid;
 import ru.liga.packagesproject.mapper.TruckMapper;
 import ru.liga.packagesproject.model.Package;
-import ru.liga.packagesproject.model.Truck;
-import ru.liga.packagesproject.model.TruckLoadingProcessSettings;
 import ru.liga.packagesproject.service.IO.input.InputReader;
 import ru.liga.packagesproject.service.IO.input.impl.PackageFileReader;
 import ru.liga.packagesproject.service.IO.output.OutputWriter;
 import ru.liga.packagesproject.service.TruckService;
-import ru.liga.packagesproject.service.truckloading.LoadingStrategy;
 import ru.liga.packagesproject.service.truckloading.LoadingStrategyFactory;
+import ru.liga.packagesproject.service.truckloading.LoadingStrategyService;
 import ru.liga.packagesproject.service.truckunloading.impl.DefaultTruckUnloader;
 
 import java.util.ArrayList;
@@ -27,15 +27,17 @@ import java.util.Optional;
  */
 @Slf4j
 @Service
-public class DefaultTruckService implements TruckService {
+public class TruckServiceImpl implements TruckService {
 
-    private final DefaultPackageService defaultPackageService;
+    private static final String NOT_FOUND_LOG_MESSAGE = "Посылка {} не найдена и будет пропущена.";
+
+    private final PackageServiceImpl packageServiceImpl;
     private final DefaultTruckUnloader defaultTruckUnloader;
     private final InputReader<TruckBodyDto> truckBodiesJsonReader;
     private final OutputWriter<TruckDto> truckJsonWriter;
 
-    public DefaultTruckService(DefaultPackageService defaultPackageService, DefaultTruckUnloader defaultTruckUnloader, InputReader<TruckBodyDto> truckBodiesJsonReader, OutputWriter<TruckDto> truckJsonWriter) {
-        this.defaultPackageService = defaultPackageService;
+    public TruckServiceImpl(PackageServiceImpl packageServiceImpl, DefaultTruckUnloader defaultTruckUnloader, InputReader<TruckBodyDto> truckBodiesJsonReader, OutputWriter<TruckDto> truckJsonWriter) {
+        this.packageServiceImpl = packageServiceImpl;
         this.defaultTruckUnloader = defaultTruckUnloader;
         this.truckBodiesJsonReader = truckBodiesJsonReader;
         this.truckJsonWriter = truckJsonWriter;
@@ -53,16 +55,15 @@ public class DefaultTruckService implements TruckService {
         List<Package> loadedPackages = new ArrayList<>();
 
         for (String packageName : packageNames) {
-            Optional<Package> optionalPackage = defaultPackageService.findPackageByName(packageName);
-            if (optionalPackage.isPresent()) {
-                loadedPackages.add(optionalPackage.get());
-            } else {
-                log.info("Посылка {} не найдена и будет пропущена.", packageName);
-            }
+            packageServiceImpl.findByName(packageName)
+                    .ifPresentOrElse(
+                            loadedPackages::add,
+                            () -> log.info(NOT_FOUND_LOG_MESSAGE, packageName)
+                    );
         }
 
         if (loadedPackages.isEmpty()) {
-            log.info("Не нашлось подходящих посылок для работы");
+            log.info("Список посылок пуст");
             throw new AllPackageNamesAreNotValid(packageNames);
         }
 
@@ -85,11 +86,11 @@ public class DefaultTruckService implements TruckService {
         List<Package> packagesToLoad = new ArrayList<>();
 
         for (List<String> packageStr : packagesStr) {
-            Optional<Package> foundPackage = defaultPackageService.findPackageByForm(packageStr);
+            Optional<Package> foundPackage = packageServiceImpl.findByForm(packageStr);
             if (foundPackage.isPresent()) {
                 packagesToLoad.add(foundPackage.get());
             } else {
-                log.info("Посылка {} не найдена и будет пропущена.", packageStr);
+                log.info(NOT_FOUND_LOG_MESSAGE, packageStr);
             }
         }
 
@@ -109,7 +110,7 @@ public class DefaultTruckService implements TruckService {
             emptyTrucksForLoading.add(new Truck(truckSize.getWidth(), truckSize.getHeight()));
         }
 
-        LoadingStrategy strategy = LoadingStrategyFactory.getStrategyFromLoadingMode(settings.getLoadingMode());
+        LoadingStrategyService strategy = LoadingStrategyFactory.getStrategyFromLoadingMode(settings.getLoadingMode());
         List<Truck> trucks = strategy.loadPackages(packagesToLoad, emptyTrucksForLoading);
 
         log.info("Загрузка посылок завершена. Загружено грузовиков: {}", trucks.size());

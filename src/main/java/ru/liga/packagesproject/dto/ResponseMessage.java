@@ -2,7 +2,6 @@ package ru.liga.packagesproject.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.liga.packagesproject.model.Truck;
 
 import java.util.List;
 

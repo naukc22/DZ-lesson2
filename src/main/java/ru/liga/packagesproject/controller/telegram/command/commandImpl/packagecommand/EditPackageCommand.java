@@ -5,18 +5,17 @@ import org.springframework.stereotype.Controller;
 import ru.liga.packagesproject.controller.telegram.command.BotCommand;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
-import ru.liga.packagesproject.service.impl.DefaultPackageService;
-import ru.liga.packagesproject.util.TelegramBotUtils;
+import ru.liga.packagesproject.service.impl.PackageServiceImpl;
 
 import java.util.List;
 
 @Controller
 public class EditPackageCommand implements BotCommand {
 
-    private final DefaultPackageService packageService;
+    private final PackageServiceImpl packageService;
 
     @Autowired
-    public EditPackageCommand(DefaultPackageService packageService) {
+    public EditPackageCommand(PackageServiceImpl packageService) {
         this.packageService = packageService;
     }
 
@@ -32,7 +31,7 @@ public class EditPackageCommand implements BotCommand {
         List<String> form = List.of(commandArgs[2].split(","));
 
         try {
-            packageService.updatePackage(name, symbol, form);
+            packageService.update(name, symbol, form);
             return new TelegramBotCommandResponse("Посылка успешно обновлена: " + name);
         } catch (Exception e) {
             return new TelegramBotCommandResponse("Ошибка при обновлении посылки: " + e.getMessage());

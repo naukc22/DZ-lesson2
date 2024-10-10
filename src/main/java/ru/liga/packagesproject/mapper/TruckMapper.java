@@ -1,8 +1,8 @@
 package ru.liga.packagesproject.mapper;
 
 import org.springframework.stereotype.Service;
+import ru.liga.packagesproject.dto.Truck;
 import ru.liga.packagesproject.dto.TruckDto;
-import ru.liga.packagesproject.model.Truck;
 
 import java.util.Arrays;
 import java.util.HashMap;

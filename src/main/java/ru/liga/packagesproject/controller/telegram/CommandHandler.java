@@ -13,7 +13,7 @@ import ru.liga.packagesproject.controller.telegram.command.commandImpl.truckcomm
 import ru.liga.packagesproject.controller.telegram.command.commandImpl.truckcommand.UnloadTrucksCommand;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandRequest;
 import ru.liga.packagesproject.dto.telegram.TelegramBotCommandResponse;
-import ru.liga.packagesproject.util.TelegramBotUtils;
+import ru.liga.packagesproject.service.util.TelegramBotUtils;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,5 +1,6 @@
 package ru.liga.packagesproject.service;
 
+import ru.liga.packagesproject.dto.PackageDto;
 import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
 import ru.liga.packagesproject.model.Package;
 
@@ -13,7 +14,7 @@ public interface PackageService {
      *
      * @return итерабельный список посылок
      */
-    Iterable<Package> findAllPackages();
+    List<PackageDto> findAll();
 
     /**
      * Создает новую посылку с заданным именем, символом и формой.
@@ -23,7 +24,7 @@ public interface PackageService {
      * @param form   форма посылки в виде списка строк
      * @return созданная посылка
      */
-    Package createPackage(String name, char symbol, List<String> form) throws PackageAlreadyExistsException;
+    Package create(String name, char symbol, List<String> form) throws PackageAlreadyExistsException;
 
     /**
      * Ищет посылку по имени.
@@ -31,7 +32,7 @@ public interface PackageService {
      * @param packageName имя посылки
      * @return опциональный объект с найденной посылкой или пустой, если посылка не найдена
      */
-    Optional<Package> findPackageByName(String packageName);
+    Optional<Package> findByName(String packageName);
 
     /**
      * Ищет посылку по форме.
@@ -39,7 +40,7 @@ public interface PackageService {
      * @param packageForm форма посылки
      * @return опциональный объект с найденной посылкой или пустой, если посылка не найдена
      */
-    Optional<Package> findPackageByForm(List<String> packageForm);
+    Optional<Package> findByForm(List<String> packageForm);
 
     /**
      * Обновляет существующую посылку с заданным именем.
@@ -48,13 +49,19 @@ public interface PackageService {
      * @param symbol новый символ посылки
      * @param form   новая форма посылки в виде списка строк
      */
-    void updatePackage(String name, char symbol, List<String> form);
+    void update(String name, char symbol, List<String> form);
 
     /**
      * Удаляет посылку по имени.
      *
      * @param name имя посылки, которую нужно удалить
      */
-    void removePackage(String name);
+    void remove(String name);
+
+    /**
+     * Найти посылку по символу
+     */
+    Iterable<Package> findBySymbol(char symbol);
+
 }
 

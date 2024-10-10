@@ -1,9 +1,9 @@
-package ru.liga.packagesproject.model;
+package ru.liga.packagesproject.dto;
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import ru.liga.packagesproject.enums.LoadingMode;
+import ru.liga.packagesproject.dto.enums.LoadingMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,6 @@ public class TruckLoadingProcessSettings {
         this.loadingMode = loadingMode;
         this.truckCount = truckSizes.size();
     }
-
 
     @Getter
     public static class TruckSize {

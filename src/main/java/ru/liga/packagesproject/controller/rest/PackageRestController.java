@@ -1,34 +1,28 @@
 package ru.liga.packagesproject.controller.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.liga.packagesproject.dto.PackageDto;
 import ru.liga.packagesproject.exception.PackageAlreadyExistsException;
 import ru.liga.packagesproject.exception.PackageNotFoundException;
-import ru.liga.packagesproject.mapper.PackageMapper;
 import ru.liga.packagesproject.model.Package;
-import ru.liga.packagesproject.service.impl.DefaultPackageService;
+import ru.liga.packagesproject.service.impl.PackageServiceImpl;
 
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/api/packages")
+@RequiredArgsConstructor
 public class PackageRestController {
 
-    private final DefaultPackageService defaultPackageService;
-
-    @Autowired
-    public PackageRestController(DefaultPackageService defaultPackageService) {
-        this.defaultPackageService = defaultPackageService;
-    }
+    private final PackageServiceImpl packageServiceImpl;
 
     @PostMapping
-    public ResponseEntity<String> addPackage(@RequestBody PackageDto packageDto) {
+    public ResponseEntity<String> create(@RequestBody PackageDto packageDto) {
         try {
-            Package newPackage = defaultPackageService.createPackage(packageDto.getName(), packageDto.getSymbol(), packageDto.getForm());
+            Package newPackage = packageServiceImpl.create(packageDto.getName(), packageDto.getSymbol(), packageDto.getForm());
             return ResponseEntity.ok("Посылка добавлена: " + newPackage.getName());
         } catch (PackageAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -36,13 +30,10 @@ public class PackageRestController {
     }
 
     @PutMapping("/{name}")
-    public ResponseEntity<String> updatePackage(
-            @PathVariable String name,
-            @RequestBody PackageDto packageDto
-    ) {
+    public ResponseEntity<String> update(@RequestBody PackageDto packageDto) {
         try {
-            defaultPackageService.updatePackage(name, packageDto.getSymbol(), packageDto.getForm());
-            return ResponseEntity.ok("Посылка обновлена: " + name);
+            packageServiceImpl.update(packageDto.getName(), packageDto.getSymbol(), packageDto.getForm());
+            return ResponseEntity.ok("Посылка обновлена: " + packageDto.getName());
         } catch (PackageNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -50,9 +41,9 @@ public class PackageRestController {
     }
 
     @DeleteMapping("/{name}")
-    public ResponseEntity<String> removePackage(@PathVariable String name) {
+    public ResponseEntity<String> delete(@PathVariable String name) {
         try {
-            defaultPackageService.removePackage(name);
+            packageServiceImpl.remove(name);
             return ResponseEntity.ok("Посылка удалена: " + name);
         } catch (PackageNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -60,10 +51,7 @@ public class PackageRestController {
     }
 
     @GetMapping
-    public List<PackageDto> listPackages() {
-        Iterable<Package> allPackages = defaultPackageService.findAllPackages();
-        return StreamSupport.stream(allPackages.spliterator(), false)
-                .map(PackageMapper::toDto)
-                .toList();
+    public List<PackageDto> findAll() {
+        return packageServiceImpl.findAll();
     }
 }

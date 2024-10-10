@@ -1,4 +1,4 @@
-package ru.liga.packagesproject.util;
+package ru.liga.packagesproject.service.util;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
